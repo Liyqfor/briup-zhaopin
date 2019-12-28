@@ -7,11 +7,24 @@
  */
 <template>
   <div id="recruitManage">
+    
     <!-- <div class="totalTitle">招聘管理</div> -->
-    <el-tabs type="card" v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="招聘中" name="doing"></el-tab-pane>
-      <el-tab-pane label="招聘完结" name="finish"></el-tab-pane>
-    </el-tabs>
+    <div class="cardChangeBox">
+      <el-tabs type="card" v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="招聘中" name="doing"></el-tab-pane>
+        <el-tab-pane label="招聘完结" name="finish"></el-tab-pane>   
+      </el-tabs>
+
+    </div>
+
+    <!-- <div class="btnBox">
+
+      <el-button type="primary" icon="el-icon-upload" size="small" style="float:right;margin:5px;">导入职位</el-button>
+      <el-button type="danger"  icon="el-icon-edit" size="small"  style="float:right;margin:5px;">发布职位</el-button>
+      
+    </div> -->
+
+     
     <!-- 选项卡体部 -->
     <div class="tbl-content">
       <router-view></router-view>
@@ -38,5 +51,33 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+
+
+<style scoped>
+
+/* 通用样式 */
+#recruitManage{
+  height:100%;
+  
+}
+
+.cardChangeBox{
+  float: left;
+  width: 100%;
+  
+ 
+}
+
+.tbl-content{
+  width: 100%;
+  float: left;
+}
+
+.btnBox{
+  float:right;
+  width: 50%;
+  
+ 
+}
+
 </style>
