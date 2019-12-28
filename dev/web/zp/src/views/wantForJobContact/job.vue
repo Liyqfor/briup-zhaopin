@@ -3,7 +3,7 @@
  * 求职列表页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: zhuyf
- * @Last Modified time: 2019-12-27 09:30:43
+ * @Last Modified time: 2019-12-28 21:02:01
  */
 <template>
   <div id="jobList">
@@ -11,11 +11,11 @@
     <!-- {{WithJobhAndEmplData}} -->
     <template>
       <el-tabs v-model="activeName" @tab-click="handleClick">
-    <el-tab-pane label="待联系" name="first"></el-tab-pane>
-    <el-tab-pane label="已联系" name="second"></el-tab-pane>
-  </el-tabs>
+        <el-tab-pane prop="temp" label="待联系" name="waiteConn"></el-tab-pane>
+        <el-tab-pane label="已联系" name="finishConn"></el-tab-pane>
+      </el-tabs>
     <el-table
-      :data="WithJobhAndEmplData"
+      :data="jobList"
       style="width: 100%">
       <el-table-column
         prop="jobhunter.realname" label="求职人" width="180">
@@ -53,22 +53,27 @@
           :total="WithJobhAndEmplData.length"
         ></el-pagination>
       </div>
-   <el-dialog :title="WithJobhAndEmplData.realname" :visible.sync="seeVisible">
+   <el-dialog :title="currentJober.realname" :visible.sync="seeVisible"
+  >
+  <!-- {{currentJober}} -->
       <div class="seeDiv">
+        <div style="margin-top:-25px">
+            <el-tag size="mini">个人信息</el-tag>
+          </div>
         <span>性别：</span>
-        {{WithJobhAndEmplData.gender}}
+        {{currentJober.gender}}
       </div>
       <div class="seeDiv">
         <span>学历：</span>
-        {{WithJobhAndEmplData.education}}
+        {{currentJober.education}}
       </div>
       <div class="seeDiv">
         <span>出生日期：</span>
-        {{WithJobhAndEmplData.birth}}
+        {{currentJober.birth}}
       </div>
       <div class="seeDiv">
         <span>工作经验：</span>
-        {{WithJobhAndEmplData.workTime}}
+        {{currentJober.workTime}}
       </div>
     </el-dialog>
   </div>
@@ -76,12 +81,13 @@
 
 <script>
 import { findAllWithJobhAndEmpl } from "@/api/EmploymentJobhunter.js";
+import config from "@/utils/config.js";
 import { findAllJobhunter } from "@/api/Jobhunter.js";
 
 export default {
   data() {
     return {
-      activeName: 'first',
+      activeName: 'waiteConn',
       // tableData: [{
       //       username: '朱喻峰',
       //       telephone:"123456789",
@@ -104,28 +110,67 @@ export default {
       //当前查看的对象
       currentJober: {},
       //模态框显示与否
-      seeVisible: false
+      seeVisible: false,
+       //当前页
+      currentPage: 1,
+      //每页条数
+      pageSize: config.pageSize,
     };
   },
-  computed: {},
+  computed: {
+    // 页数发生改变
+    jobList() {
+      let temp = [...this.WithJobhAndEmplData];
+      let page = this.currentPage;
+      let pageSize = 10;
+      return temp.slice((page - 1) * pageSize, page * pageSize);
+    }
+  },
   methods: {
+    // 页数发生改变
+    pageChange(page) {
+      this.currentPage = page;
+    },
+   
     handleClick(tab, event) {
-
-        console.log(tab, event);
-        
+        // console.log(tab.name);
+        this.activeName = tab.name;
+        this.findAllWithJAndE();
       },
       async findAllWithJAndE() {
       try {
         let res = await findAllWithJobhAndEmpl();
-        this.WithJobhAndEmplData = res.data;
-        console.log(WithJobhAndEmplData);
-      } catch (error) {
+        let temp;
+        if(this.activeName==='waiteConn'){
+          //待联系的数据
+          temp= res.data.filter((item)=>{
+            return item.remark=='待联系';
+          });
+        }
+        if(this.activeName==='finishConn'){
+          //已联系的数据
+          temp= res.data.filter((item)=>{
+            return item.remark=='已联系';
+          });
+        }
+        // let temp= res.data.filter((item)=>{
+        //     return item.remark==null;
 
-      }
+        // });
+        // console.log(temp);
+        
+        this.WithJobhAndEmplData = temp;
+        this.currentPage = 1;
+        this.WithJobhAndEmplData.forEach(item=>{
+          item.askTime=item.askTime.slice(0,10);
+        })
+        console.log(WithJobhAndEmplData);
+      } catch (error) {}
+      
     },
     //查看
     toSee(row) {
-      this.WithJobhAndEmplData = { ...row.jobhunter };
+      this.currentJober = { ...row.jobhunter };
       this.seeVisible = true;
     },
     
@@ -139,6 +184,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .seeDiv {
+
   border-bottom: 2px solid #ccc;
   line-height: 40px;
   font-weight: bold;
@@ -146,4 +192,8 @@ export default {
     color: #777;
   }
 }
+.pageDiv {
+    float: left;
+    margin-top: 20px;
+  }
 </style>

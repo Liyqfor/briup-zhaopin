@@ -3,7 +3,7 @@
  * 招聘审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-28 14:39:39
+ * @Last Modified time: 2019-12-28 22:48:04
  */
 <template>
   <div id="recruitCheck">
@@ -22,12 +22,13 @@
       </div>
       <div class="Key-s">
           <div style="margin-top: 15px;">
-            <el-input placeholder="请输入内容" v-model="input4" class="input-with-select">
-              <el-select v-model="select" slot="prepend" placeholder="关键字">
-                <el-option label="餐厅名" value="1"></el-option>
+            <el-input @change="inputChange" placeholder="请输入内容" v-model="searchKeyword" class="input-with-select">
+              <el-select  v-model="searchType" slot="prepend" placeholder="关键字">
+                   <el-option label="招聘标题" value="1"></el-option>
+                   <el-option label="职位名称" value="2"></el-option>
                
               </el-select>
-              <el-button slot="append" icon="el-icon-search"></el-button>
+              <el-button slot="append" icon="el-icon-search" @click="searchForEmploy" ></el-button>
             </el-input>
           </div>
       </div>
@@ -77,14 +78,27 @@
        </template>
     </el-table-column>
      <el-table-column
-      prop="status"
+     
       label="状态"
       >
+       <template  slot-scope="scope">
+              <div v-if="scope.row.status==='待审核'">
+                    <el-button  class="tonguo" type="text" @click="toEdit(scope.row)" size="small" >通过</el-button>
+                    <el-button class="jujue" type="text" size="small" @click="toDelete(scope.row)">拒绝</el-button>
+              </div>
+              <div v-if="scope.row.status==='审核通过'">
+                    <span>审核通过</span>
+              </div>
+               <div v-if="scope.row.status==='审核未通过'">
+                    <span>已拒绝</span>
+              </div>
+             
+            </template>
     </el-table-column>
   </el-table>
   <div class="footerDiv">
   <div class="btnDiv">
-        <el-button @click="toBatchPass" size="mini" type="danger" plain>批量删除</el-button>
+        <el-button @click="toBatchPass" size="mini" type="danger" plain>一键通过</el-button>
     </div >
          <div class="pageDiv">
             <el-pagination
@@ -97,6 +111,107 @@
             ></el-pagination>
           </div>
       </div>
+      <el-dialog
+    title="请填写拒绝理由"
+    
+    :visible.sync="dialogVisible"
+    width="30%"
+    >
+      <!-- <el-input
+        type="textarea"
+        :rows="2"
+        placeholder="请输入内容"
+        v-model="textarea">
+        
+      </el-input> -->   
+      <el-form :inline="true"  class="demo-form-inline">
+          <el-form-item label="审批人">
+        <el-input  ></el-input>
+          </el-form-item>
+      </el-form>
+      <!-- {{textarea}} -->
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogtoqx">取 消</el-button>
+      <el-button type="primary" @click="dialogtoqd">确 定</el-button>
+    </span>
+  </el-dialog>
+
+   <el-dialog class="toSeeBox"
+        :title="list.title"
+        :visible.sync="seeVisible"
+        width="30%"
+        >
+
+        <!-- 最外层容器 -->
+        <div class="seeBoxContainer">
+
+           <!-- 第一行 -->
+          <div class="oneFlour Flour">
+
+            <!-- 左边的招聘人数和地址 -->
+            <div class="oneFlourLeft">
+              <div class="zhaoren1"><i class="el-icon-document"> 需求人数：{{list.num}}</i> </div>
+              <div class="position"><i class="el-icon-location"> {{list.province}} - {{list.city}} </i></div>
+            </div>
+
+            <!-- 右边的工资 -->
+            <div  class="oneFlourRight">        
+              <div class="salary"><h2>{{list.salary}}元/月</h2></div>
+            </div>
+
+          </div>
+
+          <!-- 第二行 -->
+          <div class="twoFlour Flour">
+
+            <div class="tagBox">
+              <el-tag type="success">{{list.welfare}}</el-tag>
+            </div>
+
+          </div>
+
+          <!-- 第三行 -->
+          <div class="threeFlour Flour">
+            <!-- 分割线 -->
+            <div class="fence">
+              <hr  style="FILTER:alpha(opacity=100,finishopacity=0,style=3)" width="100%" color=#ff9900 SIZE=3 />
+            </div>
+          </div>
+
+          <!-- 第四行 -->
+          <div class="fourFlour Flour">
+            <el-row>
+              <el-col :span="24"> <b>职位：{{list.job}}</b> </el-col>
+            </el-row>
+          </div>
+
+          <!-- 第五行 -->
+          <div class="fiveFlour Flour">
+            <b>职位介绍</b>
+          </div>
+
+          <!-- 第六行 -->
+          <div class="sixFlour Flour">
+            <div class="workingHours">
+              每天工作{{list.workingHours}}小时
+            </div>
+          </div>
+
+
+          <!-- 第七行 -->
+          <div class="sevenFlour Flour">
+            <div class="desc">
+              {{list.description}}
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 脚步按钮 -->
+        <span slot="footer" class="dialog-footer">        
+          <el-button type="primary" @click="seeVisible = false">关闭</el-button>
+        </span>
+      </el-dialog>
   </div>
 </template>
 
@@ -105,6 +220,8 @@ import{
   findAllEmployment,
   findEmploymentByJob,
   deleteByIdEmployment,
+  findEmploymentByTitle,
+  saveOrUpdateEmployment,
   } 
   from "@/api/employment-controller.js";
 import config from "@/utils/config.js";
@@ -117,12 +234,17 @@ export default {
       recruit:[],
       jobData:[],
       multipleSelection: [],
-      input4:'',
+      searchKeyword:'',
       select:[],
       pageSize:config.pageSize,
       currentPage:1,
       ids:[],
-     
+      searchType:'',
+      employmentTitleData:[],
+      dialogVisible:false,
+      seeVisible:false,
+      list:[],
+
       
     };
   },
@@ -137,9 +259,89 @@ export default {
   
   },
   methods: {
-    // 批量删除
-    toBatchPass(val){
-      
+    dialogtoqx(){
+      },
+
+   async dialogtoqd(){
+
+        this.recruitData.status="审核未通过";          
+       try {
+              // this.currentBus.status=jj;
+               
+               let res=await saveOrUpdateEmployment(this.recruitData);
+                   
+              if(res.status===200)
+              {    
+                  
+                   this.dialogVisible=false;                
+                   config.successMsg(this,"修改成功");
+                   this.findAllEmp();
+              }else{
+                config.successMsg(this,"修改失败");
+
+              }
+              
+            
+            } catch (error) {
+              console.log(error);
+            }
+        this.dialogVisible=false;
+      },
+    
+
+  //通过关键字查询数据
+
+    inputChange(){
+      this.findAllEmp();
+    },
+  //通过招聘标题发生改变
+   async searchForEmploy(searchKeyword){   
+      if(this.searchType === "2"){
+        if(this.searchKeyword){
+          
+          try {
+            let res = await findEmploymentByJob({job:this.searchKeyword});
+            // console.log(res.data);
+            this.recruitData = res.data;
+           
+            this.currentPage = 1;
+          } catch (error) {
+            config.errorMsg(this,'请输入与'+searchType+'相关的关键字');
+          }
+        }
+        else{
+          this.findAllEmp();
+        }
+      }
+      else{
+        if(this.searchKeyword){
+          // console.log(this.searchKeyword);
+          try {
+            let res = await findEmploymentByTitle({title:this.searchKeyword});
+            this.recruitData = res.data;
+            this.currentPage = 1;
+          } catch (error) {
+            config.errorMsg(this,'请输入与'+searchType+'相关的关键字');
+          }
+        }
+        else{
+          this.findAllEmp();
+        }
+      }
+    },
+    
+
+    // 一键通过
+    async toBatchPass(val){
+      let pass="审核通过";
+      try {
+
+        let res=await findAllEmployment();
+        res.data.status=pass;
+             
+      } catch (error) {
+        console.log(error);
+      }
 
     },
     // 通过jobType筛选数据
@@ -171,20 +373,53 @@ export default {
               return item.job;
             })
             this.jobData=[...new Set(jobDataArr)];
+
+        // 格式化时间
+            this.recruitData.forEach(item=>{
+             item.publishTime=item.publishTime.slice(0,10);})
+
         } catch (error) {
           config.errorMsg(this,"获取招聘信息失败");
         }
       },
 
        toSee(row){
-        this.currentBus = { ...row };
+        this.list = { ...row };
+        // console.log(this.list);
         this.seeVisible = true;
       },
-      toEdit(){
-        alert(1);
+      async toEdit(row){
+        // console.log(row);    
+         
+        this.recruitData = {...row};
+                delete this.recruitData.publishTime;
+                delete this.recruitData.startTime; 
+                delete this.recruitData.endTime; 
+        this.recruitData.status="审核通过"; 
+         try {
+                 
+               let res=await saveOrUpdateEmployment(this.recruitData);
+               this.findAllEmp();
+                 
+              if(res.status===200)
+              {    
+                  
+          
+                   config.successMsg(this,"修改成功");
+                  //  this.findAllEmp();
+              }else{
+                config.successMsg(this,"修改失败");
+
+              }
+              
+            
+            } catch (error) {
+              console.log(error);
+            }
 
       },
       toDelete(row){
+        this.recruitData=[...row];
         this.dialogVisible=true;
 
       },
@@ -225,5 +460,33 @@ export default {
   .pageDiv {
     float: right;
   }
+  .Flour{
+  margin-bottom: 10px;
+}
+
+
+
+}
+.oneFlour{
+  height: 54px;
+
+}
+
+.oneFlourLeft{
+  width:50%;
+  float:left;
+
+}
+
+.oneFlourLeft>*{
+  margin: 7.5px;
+}
+
+.oneFlourRight{
+  text-align: center;
+  color: coral;
+  width:50%;
+  float:right;
+ 
 }
 </style>
