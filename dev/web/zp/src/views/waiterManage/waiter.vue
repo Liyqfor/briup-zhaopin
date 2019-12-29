@@ -1,3 +1,40 @@
+<!--
+ @Author:Ivan
+ @Date:2019-12-29 16:58:32
+ @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 16:58:32
+-->
+
+ @Last Modified time:2019-12-29 16:58:21
+-->
+
+ @Last Modified time:2019-12-29 16:57:46
+-->
+
+ @Last Modified time:2019-12-29 16:57:14
+-->
+
+ @Last Modified time:2019-12-29 16:56:43
+-->
+
+ @Last Modified time:2019-12-29 16:53:36
+-->
+
+ @Last Modified time:2019-12-29 16:52:14
+-->
+
+ @Last Modified time:2019-12-29 16:51:10
+-->
+
+ @Last Modified time:2019-12-29 16:50:55
+-->
+
+ @Last Modified time:2019-12-29 16:47:47
+-->
+
+ @Last Modified time:2019-12-29 16:47:24
+-->
+
 /*
  * @Author: liuyr 
  * 客服列表页面
@@ -7,13 +44,13 @@
  */
 <template>
   <div id="waiterList">
-    <div class="controler">
-      <el-button @click="showAddDialg" type="primary" size="mini">添加客服</el-button>
-      <el-button @click="showImportDialg" type="danger" size="mini">导入客服</el-button>
+    <div class="controler" style="position: absolute;top: 5px;right: 10px;">
+      <el-button @click="showAddDialg" style="background:rgb(238,121,66); color:#fff;" icon="el-icon-info" size="mini">添加客服</el-button>
+      <el-button @click="showImportDialg" type="primary" icon="el-icon-info" size="mini" >导入客服</el-button>
     </div>
     <div class="searchDIV">
       <div class="left-searchDIV">
-            <el-select @change="educationChange" v-model="CustomerService" clearable placeholder="在线" size="small" >
+            <el-select @change="educationChange" v-model="CustomerService" clearable placeholder="全部"  size="mini">
               <el-option
                 v-for="item1 in CustomerServiceByEducationData"
                 :key="item1"
@@ -21,7 +58,7 @@
                 :value="item1">
               </el-option>
             </el-select>
-            <el-select @change="genderChange" v-model="CustomerServiceByEducation" clearable placeholder="性别" size="small" >
+            <el-select @change="genderChange" v-model="CustomerServiceByEducation" clearable placeholder="性别"  size="mini">
               <el-option
                 v-for="item2 in CustomerServiceByGenderData"
                 :key="item2"
@@ -32,12 +69,12 @@
             <!-- <span>（当前标准为 <span style="">15</span> 人）</span> -->
       </div>
       <div class="right-searchDIV">
-          <el-input placeholder="请输入内容" v-model="sercherBoxInput" @keyup.enter="toSercherCustomerService" clearable size="small" class="input-with-select">
-            <el-select v-model="sercherSelectInput"  slot="prepend" placeholder="关键字" style="width:7vw">
-              <el-option label="id" value="111"></el-option>
+          <el-input placeholder="请输入内容" v-model="sercherBoxInput" @keyup.enter="toSercherCustomerService" clearable  class="input-with-select" size="mini">
+            <el-select v-model="sercherSelectInput"  slot="prepend" placeholder="关键字" style="width:7vw" size="mini">
+              <!-- <el-option label="id" value="111"></el-option> -->
               <el-option label="用户名" value="222"></el-option>
             </el-select>
-            <el-button slot="append" @click="toSercherCustomerService" icon="el-icon-search"></el-button>
+            <el-button slot="append" @click="toSercherCustomerService" icon="el-icon-search" size="mini"></el-button>
           </el-input>
 
       </div>
@@ -148,8 +185,9 @@
 
         </div>
         <div class="right">
-          <el-button type="info" size="mini" style="background: #555; color:#FFF;">自动分配</el-button>
-          <el-button type="info" size="mini" style="background: #555; color:#FFF;">自动填满</el-button>
+          <el-button type="info" size="mini" @click="showExpect" style="background: #555; color:#FFF;">自动分配</el-button>
+          
+          <el-button type="info" size="mini" @click="showExpect" style="background: #555; color:#FFF;">自动填满</el-button>
         </div>
         
       </div>
@@ -165,7 +203,11 @@
         <el-table-column property="dealCustomerServicerealName" label="经手人" align="center" header-align="center"></el-table-column>
         <el-table-column property="applicationTime" label="申请时间" sortable align="center" header-align="center"></el-table-column>
       </el-table>
-      <div style="display: flex;justify-content: flex-end;">
+      <div style="display: flex;justify-content: space-between; margin-top:5px">
+        <div >
+          <el-button type="info" size="mini" @click="showExpect" style="background: #409EFF; color:#FFF; border:0;">自动分配</el-button>
+          <el-button type="info" size="mini" @click="showExpect" style="background: #409EFF; color:#FFF; border:0;">自动填满</el-button>
+        </div>
         <el-pagination
           :page-size="pageSize"
 
@@ -181,17 +223,18 @@
     </el-dialog>
     <div class="footerDiv">
       <div class="foot-button">
-          <el-button type="info" size="mini" style="background: #555; color:#FFF;" >自动分配</el-button>
-          <el-button type="info" size="mini" style="background: #555; color:#FFF;">自动填满</el-button>
+
+          <el-button type="info" size="mini" @click="showExpect" style="background: #409EFF; color:#FFF; border:0;" >自动分配</el-button>
+          <el-button type="info" size="mini" @click="showExpect" style="background: #409EFF; color:#FFF;  border:0;">自动填满</el-button>
       </div>
       
       <div class="pageDiv">
         <el-pagination
-          :page-size="pageSize"
+          :page-size="5"
 
           :current-page.sync="currentPage"
           background
-          small
+          
           @current-change="pageChange"
           layout="prev, pager, next"
           :total="CustomerServiceData.length"
@@ -422,8 +465,8 @@ export default {
     toSercherCustomerService(){
       let that = this;
        // 111代表id，222代表用户名
-       ( that.sercherSelectInput == "111") ?that.find_CustomerServiceById()
-       :(that.sercherSelectInput == "222") ?that.find_CustomerServiceByUsername()
+      //  ( that.sercherSelectInput == "111") ?that.find_CustomerServiceById():
+       (that.sercherSelectInput == "222") ?that.find_CustomerServiceByUsername()
        :config.errorMsg(this, "请选择查询类别"); 
     },
     //通过id获取客服
@@ -436,7 +479,7 @@ export default {
         that.currentPage = 1;
 
       } catch (error) {
-        console
+        
         config.errorMsg(that, "查找错误");
       }
     },
@@ -444,7 +487,7 @@ export default {
     async find_CustomerServiceByUsername(){
       let that = this;
       try {
-        let res = await findCustomerServiceByUsername(that.sercherBoxInput);
+        let res = await findCustomerServiceByUsername({username:that.sercherBoxInput});
         that.CustomerServiceData = res.data;
         that.currentPage = 1;
 
@@ -511,6 +554,12 @@ export default {
       } else {
         this.find_AllCustomerService();
       }
+    },
+    showExpect(){
+      this.$notify.info({
+          title: '消息',
+          message: '该功能正在测试，请期待下一版本'
+        });
     }
   },
   created() {
@@ -523,9 +572,7 @@ export default {
 </script>
 <style scoped>
 .controler{
-  position: absolute;
-  top: 1%;
-  right: 2%;
+  
 }
 .searchDIV{
   display: flex;

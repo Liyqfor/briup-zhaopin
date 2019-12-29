@@ -1,3 +1,16 @@
+<!--
+ @Author:Ivan
+ @Date:2019-12-29 17:01:56
+ @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 17:01:56
+-->
+
+ @Last Modified time:2019-12-29 17:01:45
+-->
+
+ @Last Modified time:2019-12-29 16:07:48
+-->
+
 /*
  * @Author: liuyr 
  * 招聘审核页面
@@ -10,7 +23,7 @@
      <!-- 下拉框 -->
       <!-- {{jobData}} -->
        <div class="selectDiv">
-          <el-select @change="jobTyleData" v-model="recruit" clearable placeholder="职位类型">
+          <el-select @change="jobTyleData" v-model="recruit" clearable placeholder="职位类型" size="mini">
             <el-option
               v-for="item in jobData"
               :key="item"
@@ -22,7 +35,7 @@
       </div>
       <div class="Key-s">
           <div style="margin-top: 15px;">
-            <el-input @change="inputChange" placeholder="请输入内容" v-model="searchKeyword" class="input-with-select">
+            <el-input @change="inputChange" placeholder="请输入内容" v-model="searchKeyword" class="input-with-select" size="mini">
               <el-select  v-model="searchType" slot="prepend" placeholder="关键字">
                    <el-option label="招聘标题" value="1"></el-option>
                    <el-option label="职位名称" value="2"></el-option>
@@ -512,7 +525,7 @@ export default {
 }
 .footerDiv {
   overflow: hidden;
-  margin-top: 10px;
+  margin-top: 20px;
   .btnDiv {
     float: left;
   }

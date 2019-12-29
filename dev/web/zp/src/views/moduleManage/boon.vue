@@ -1,7 +1,19 @@
 <!--
  @Author:Ivan
- @Date:2019-12-28 15:22:56
+ @Date:2019-12-29 17:03:36
  @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 17:03:36
+-->
+
+ @Last Modified time:2019-12-29 17:03:13
+-->
+
+ @Last Modified time:2019-12-29 15:43:40
+-->
+
+ @Last Modified time:2019-12-29 15:42:32
+-->
+
  @Last Modified time:2019-12-28 15:22:56
 -->
 
@@ -28,7 +40,7 @@
   <div id="moduleBoon">
     <!-- 下拉框 -->
     <div class="selectDiv">
-      <el-select v-model="selectWelfare" clearable placeholder="全部" @change='selectChange'>
+      <el-select v-model="selectWelfare" clearable placeholder="全部" @change='selectChange' size="mini">
         <el-option
           v-for="item in welfareName"
           :key="item"
@@ -273,6 +285,6 @@ export default {
     }
   }
 .selectDiv{
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 </style>

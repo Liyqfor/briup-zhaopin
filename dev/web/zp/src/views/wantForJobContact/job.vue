@@ -19,16 +19,16 @@
       :data="jobList"
       style="width: 100%">
       <el-table-column
-        prop="jobhunter.realname" label="求职人" width="250">
+        prop="jobhunter.realname" label="求职人" width="270">
       </el-table-column>
       <el-table-column
-        prop="jobhunter.telephone" label="联系方式" width="250">
+        prop="jobhunter.telephone" label="联系方式" width="270">
       </el-table-column>
       <el-table-column
-        prop="employment.job" label="求职岗位" width="250">
+        prop="employment.job" label="求职岗位" width="270">
       </el-table-column>
        <el-table-column
-         label="简历" width="250">
+         label="简历" width="270">
          <template slot-scope="scope">
         <el-button @click="toSee(scope.row)" type="text" size="small">查看简历</el-button>
       </template>
@@ -43,7 +43,7 @@
       :value="item.value">
     </el-option> -->
     </el-table>
-    
+
   </template>
       <div class="pageDiv">
         <el-pagination
@@ -54,6 +54,7 @@
           :total="WithJobhAndEmplData.length"
         ></el-pagination>
       </div>
+
    <el-dialog :title="currentJober.realname" :visible.sync="seeVisible" width=30%>
   <!-- {{currentJober}} -->
       <div class="seeDiv">
@@ -88,23 +89,6 @@ export default {
   data() {
     return {
       activeName: 'waiteConn',
-      // tableData: [{
-      //       username: '朱喻峰',
-      //       telephone:"123456789",
-      //       job:"Boss",
-      //       resume:'一张白纸',
-      //       askTime:'2019-12-24'
-      //     }], 
-      // username:"",
-      // telephone:"",
-      // job:"",
-      // resume:"",
-      // askTime:"",
-      // usernameData: [],
-      // telephoneData: [],
-      // jobData: [],
-      // resumeData: [],
-      // askTimeData: [],
       WithJobhAndEmplData:[],
       //当前查看的对象
       currentJober: {},
@@ -154,7 +138,6 @@ export default {
         }
         // let temp= res.data.filter((item)=>{
         //     return item.remark==null;
-
         // });
         // console.log(temp);
         this.WithJobhAndEmplData = temp;
@@ -171,8 +154,6 @@ export default {
       this.currentJober = { ...row.jobhunter };
       this.seeVisible = true;
     },
-    
-    
   },
   created() {
     this.findAllWithJAndE();
@@ -180,6 +161,7 @@ export default {
   mounted() {}
 };
 </script>
+
 <style lang="scss" scoped>
 .seeDiv {
   border-bottom: 2px solid #ccc;
