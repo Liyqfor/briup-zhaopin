@@ -3,7 +3,7 @@
  * 招聘中页面
  * @Date: 2019-12-23 17:03:30 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2019-12-29 15:22:35
+ * @Last Modified time: 2019-12-29 17:28:48
  */
 <template>
   <div id="recruitDoing">    
@@ -16,7 +16,7 @@
         <!-- 搜索栏    -->
         <div class="SearchBox"> 
                  
-          <div style="margin-top: 0px;">    
+          <!-- <div style="margin-top: 0px;">    
             <el-select v-model="key" style="width:110px;" placeholder="关键字">
               <el-option
                 v-for="item in options"
@@ -28,10 +28,23 @@
             <el-input @change="searchChange" placeholder="请输入关键字" v-model="string" style="width:200px;" class="input-with-select">             
               <el-button @click="keySearch" slot="append" icon="el-icon-search"></el-button>
             </el-input>
-          </div>
+          </div>  -->
+
+           <el-input placeholder="请输入内容" @change="searchChange"  v-model="string" class="input-with-select">
+            <el-select v-model="key" slot="prepend" style="width:120px" placeholder="请选择">
+              <el-option v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"></el-option>
+            </el-select>
+            <el-button slot="append" @click="keySearch" icon="el-icon-search"></el-button>
+          </el-input> 
+
         </div>
-        <!-- 职位选择筛选器 -->
-        <div class="jobDropDownBox">
+
+
+      <!-- 职位选择筛选器 -->
+       <div class="jobDropDownBox">
           <el-select @change="JobSelect" clearable v-model="job" placeholder="职位类型" >
             <el-option class="oooo"
               
@@ -81,14 +94,14 @@
 
       </div>
 
-    <!-- 招聘container -->
+    <!-- 招聘container关闭div标签 -->
     </div>  
 
     <!-- 底部分页盒子包含批量删除按钮 -->
     <div class="PaginationBox">
 
       <!-- 批量删除按钮 -->
-       <el-button type="danger" @click="toBatchDelete" >批量删除</el-button>
+       <el-button type="danger" @click="toBatchDelete" size="small" plain>批量删除</el-button>
 
 
       <!-- 分页器 -->
@@ -389,7 +402,7 @@ export default {
       currentPage:1,//当前页
       tableData:[],
       publishTimeData:[],
-      job:"",
+      job:"",key: '发布人',
       jobData:[],
       options: [{
           value: '招聘标题',
@@ -398,13 +411,10 @@ export default {
           value: '发布人',
           label: '发布人'
         }, {
-          value: '福利',
-          label: '福利'
-        }, {
           value: '职位',
           label: '职位'
         },],
-      key: '',
+      
       rules: {
           title: [
             { required: true, message: '请输入标题', trigger: 'blur' },
@@ -445,7 +455,6 @@ export default {
 
     //搜索框发生改变
     searchChange(val){
-      console.log(val);
     },
 
     //关键字搜索
@@ -459,15 +468,15 @@ export default {
           drr.push(item);
       })
 
-        //时间格式转换
-          let timeArr = data.data.map(item =>{
-          let tm=item.publishTime;
-          item.publishTime=tm.slice(0,10);
-          return item.publishTime;
-        })
+      //时间格式转换
+        let timeArr = data.data.map(item =>{
+        let tm=item.publishTime;
+        item.publishTime=tm.slice(0,10);
+        
+        return item.publishTime;
+      })
       
-      drr.publishTime
-      
+        
       
       let string = this.string;
       //招聘标题
@@ -514,16 +523,15 @@ export default {
           prr.push(item);
         })
       }
-      else{
+      else {
         this.currentPage=1;
-        this.findEmp();
+        let prr = drr;
       }
 
 
 
       this.currentPage=1;
       this.tableData=prr;
-
     },
 
 
@@ -555,7 +563,7 @@ export default {
     async toSave(formName){
 
 
-  //表单验证
+    //表单验证
      this.$refs[formName].validate(async(valid) => {
           if (valid) {
                             // 将省份id转换为省份名字保存到数据库

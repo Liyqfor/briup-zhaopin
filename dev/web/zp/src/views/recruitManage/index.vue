@@ -3,7 +3,7 @@
  * 招聘管理页面
  * @Date: 2019-12-22 16:49:20 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2019-12-29 14:57:58
+ * @Last Modified time: 2019-12-29 17:19:08
  */
 <template>
   <div id="recruitManage">
@@ -19,8 +19,8 @@
 
     <div class="btnBox">
 
-      <el-button type="primary" icon="el-icon-upload" size="small" >导入职位</el-button>
-      <el-button type="danger" @click="toEdit" icon="el-icon-edit" size="small"  >发布职位</el-button>
+      <el-button type="primary" icon="el-icon-info" size="small" >导入职位</el-button>
+      <el-button  @click="toEdit" icon="el-icon-info" size="small" style="background-color:#ff6600;color:white">发布职位</el-button>
       
     </div> 
 
@@ -477,12 +477,12 @@ export default {
 
 .cardChangeBox{
   float: left;
-  width: 50%;
+  width: 82%;
 }
 
 .btnBox{
   float:right;
-  width: 50%;
+  width: 18%;
   
 }
 .btnBox>*{
