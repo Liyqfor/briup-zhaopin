@@ -3,14 +3,14 @@
  * 招聘审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-29 17:12:35
+ * @Last Modified time: 2019-12-29 19:06:05
  */
 <template>
   <div id="recruitCheck">
      <!-- 下拉框 -->
       <!-- {{jobData}} -->
        <div class="selectDiv" >
-          <el-select @change="jobTyleData" v-model="recruit" clearable placeholder="职位类型">
+          <el-select @change="jobTyleData" size="mini" v-model="recruit" clearable placeholder="职位类型">
             <el-option
               v-for="item in jobData"
               :key="item"
@@ -22,7 +22,7 @@
       </div>
       <div class="Key-s">
           <div style="">
-            <el-input @change="inputChange" placeholder="请输入内容" v-model="searchKeyword" class="input-with-select">
+            <el-input @change="inputChange" size="mini" placeholder="请输入内容" v-model="searchKeyword" class="input-with-select">
               <el-select  v-model="searchType" slot="prepend" placeholder="关键字">
                    <el-option label="招聘标题" value="1"></el-option>
                    <el-option label="职位名称" value="2"></el-option>
@@ -84,8 +84,8 @@
       >
        <template  slot-scope="scope">
               <div v-if="scope.row.auditStatus==='待审核'">
-                    <el-button  class="tonguo" type="text" @click="toEdit(scope.row)" size="small" >通过</el-button>
-                    <el-button class="jujue" type="text" size="small" @click="toDelete(scope.row)">拒绝</el-button>
+                    <el-button  class="tonguo " type="text" @click="toEdit(scope.row)" size="small" >通过</el-button>
+                    <el-button class="jujue " type="text" size="small" @click="toDelete(scope.row)">拒绝</el-button>
               </div>
               <div v-if="scope.row.auditStatus==='审核通过'">
                     <span class="tg_span">审核通过</span>
@@ -269,6 +269,49 @@ export default {
   
   },
   methods: {
+    inputChange(){
+      this.findAllEmp();
+    },
+  //通过招聘标题发生改变
+   async searchForEmploy(searchKeyword){   
+      if(this.searchType === "2"){
+        if(this.searchKeyword){
+          
+          try {
+            let res = await findEmploymentByJob({job:this.searchKeyword});
+            // console.log(res.data);
+            this.recruitData = res.data;
+           
+            this.currentPage = 1;
+            this.recruitData.forEach(item=>{
+             item.publishTime=item.publishTime.slice(0,10);})
+             console.log(recruitData);
+          } catch (error) {
+            config.errorMsg(this,'请输入与'+searchType+'相关的关键字');
+          }
+        }
+        else{
+          this.findAllEmp();
+        }
+      }
+      else{
+        if(this.searchKeyword){
+          // console.log(this.searchKeyword);
+          try {
+            let res = await findEmploymentByTitle({title:this.searchKeyword});
+            this.recruitData = res.data;
+            this.currentPage = 1;
+            this.recruitData.forEach(item=>{
+             item.publishTime=item.publishTime.slice(0,10);})
+          } catch (error) {
+            config.errorMsg(this,'请输入与'+searchType+'相关的关键字');
+          }
+        }
+        else{
+          this.findAllEmp();
+        }
+      }
+    },
     
    toSee(row){
         this.list = { ...row };
@@ -326,49 +369,7 @@ export default {
 
   //通过关键字查询数据
 
-    inputChange(){
-      this.findAllEmp();
-    },
-  //通过招聘标题发生改变
-   async searchForEmploy(searchKeyword){   
-      if(this.searchType === "2"){
-        if(this.searchKeyword){
-          
-          try {
-            let res = await findEmploymentByJob({job:this.searchKeyword});
-            // console.log(res.data);
-            this.recruitData = res.data;
-           
-            this.currentPage = 1;
-            this.recruitData.forEach(item=>{
-             item.publishTime=item.publishTime.slice(0,10);})
-             console.log(recruitData);
-          } catch (error) {
-            config.errorMsg(this,'请输入与'+searchType+'相关的关键字');
-          }
-        }
-        else{
-          this.findAllEmp();
-        }
-      }
-      else{
-        if(this.searchKeyword){
-          // console.log(this.searchKeyword);
-          try {
-            let res = await findEmploymentByTitle({title:this.searchKeyword});
-            this.recruitData = res.data;
-            this.currentPage = 1;
-            this.recruitData.forEach(item=>{
-             item.publishTime=item.publishTime.slice(0,10);})
-          } catch (error) {
-            config.errorMsg(this,'请输入与'+searchType+'相关的关键字');
-          }
-        }
-        else{
-          this.findAllEmp();
-        }
-      }
-    },
+    
     
 
     // 一键通过
@@ -390,12 +391,12 @@ export default {
                     delete this.recruitData.publishTime;
                     delete this.recruitData.startTime;
                     delete this.recruitData.endTime;
-                  try {
-                    let stu=await saveOrUpdateEmployment(this.recruitData);
-                    this.findAllEmp();
-                  } catch (error) {
-                    config.successMsg(this,"保存错误！");
-                  }
+                      try {
+                        let stu=await saveOrUpdateEmployment(this.recruitData);
+                        this.findAllEmp();
+                      } catch (error) {
+                        config.successMsg(this,"保存错误！");
+                      }
                   console.log(res.data.status);
                   result.push(res.auditStatus);
                 } catch (error) {
@@ -409,9 +410,9 @@ export default {
                   return item === 200;
                 });
                 if (resu) {
-                  config.successMsg(this, "批量删除成功");
+                  config.successMsg(this, "批量通过成功");
                 } else {
-                  config.errorMsg(this, "批量删除失败");
+                  config.successMsg(this, "批量通过成功");
                 }
                 this.findAllEmp();
               }, 500);
@@ -433,9 +434,13 @@ export default {
           let res = await findEmploymentByJob({ job : val });
           this.recruitData = res.data;
           this.currentPage = 1;
+          this.recruitData.forEach(item=>{
+          item.publishTime=item.publishTime.slice(0,10);})
         } catch (error) {
           config.errorMsg(this, "通过行业查找商家信息错误");
           // console.log(error);
+           // 格式化时间
+            
         }
       } else {
         this.findAllEmp();
@@ -515,14 +520,25 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.tonguo{
+     width: 30px;
+     color: #fff;
+    background-color: #008000;
+}
+.jujue{
+     width: 30px;
+     color: #fff;
+    
+    background-color: #FF0000;
+}
 .tableCss{
   // text-align: center;
 }
 .Key-s{
   float: right;
-  width: 350px;
+  width: 300px;
   .el-select{
-    width: 120px;
+    width: 90px;
   }
 }
 .selectDiv{
