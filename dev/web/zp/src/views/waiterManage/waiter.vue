@@ -3,77 +3,90 @@
  * 客服列表页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2019-12-27 17:24:50
+ * @Last Modified time: 2019-12-28 17:34:03
  */
 <template>
   <div id="waiterList">
     <div class="controler">
       <el-button @click="showAddDialg" type="primary" size="mini">添加客服</el-button>
-      <el-button @click="showImportDialg" type="primary" size="mini">导入客服</el-button>
+      <el-button @click="showImportDialg" type="danger" size="mini">导入客服</el-button>
     </div>
     <div class="searchDIV">
-      <el-select @change="educationChange" v-model="CustomerService" clearable placeholder="在线" size="mini" >
-        <el-option
-          v-for="item1 in CustomerServiceByEducationData"
-          :key="item1"
-          :label="item1"
-          :value="item1">
-        </el-option>
-      </el-select>
-      <el-select @change="genderChange" v-model="CustomerServiceByEducation" clearable placeholder="性别" size="mini" >
-        <el-option
-          v-for="item2 in CustomerServiceByGenderData"
-          :key="item2"
-          :label="item2"
-          :value="item2">
-        </el-option>
-      </el-select>
-      <span>（当前标准为<span>15</span>人）</span>
+      <div class="left-searchDIV">
+            <el-select @change="educationChange" v-model="CustomerService" clearable placeholder="在线" size="small" >
+              <el-option
+                v-for="item1 in CustomerServiceByEducationData"
+                :key="item1"
+                :label="item1"
+                :value="item1">
+              </el-option>
+            </el-select>
+            <el-select @change="genderChange" v-model="CustomerServiceByEducation" clearable placeholder="性别" size="small" >
+              <el-option
+                v-for="item2 in CustomerServiceByGenderData"
+                :key="item2"
+                :label="item2"
+                :value="item2">
+              </el-option>
+            </el-select>
+            <!-- <span>（当前标准为 <span style="">15</span> 人）</span> -->
+      </div>
+      <div class="right-searchDIV">
+          <el-input placeholder="请输入内容" v-model="sercherBoxInput" @keyup.enter="toSercherCustomerService" clearable size="small" class="input-with-select">
+            <el-select v-model="sercherSelectInput"  slot="prepend" placeholder="关键字" style="width:7vw">
+              <el-option label="id" value="111"></el-option>
+              <el-option label="用户名" value="222"></el-option>
+            </el-select>
+            <el-button slot="append" @click="toSercherCustomerService" icon="el-icon-search"></el-button>
+          </el-input>
+
+      </div>
     </div>
-    {{toAddVisible}}
+
     <div class="tableDiv">
         <el-table
-            :data="CustomerServiceData"
+            :data="waiterList"
             tooltip-effect="dark"
             style="width: 100%">
         <el-table-column
             prop=""
             label="#"
-            width="50">
+            type="selection"
+            width="150">
         </el-table-column>
         <el-table-column
           prop="username"
           label="用户名"
-          width="180">
+          >
         </el-table-column>
         <el-table-column
           prop="realname"
           label="姓名"
-          width="180">
+          >
         </el-table-column>
         <el-table-column
           prop="status"
           label="状态"
-          width="180">
+          >
         </el-table-column>
         <el-table-column
           prop=""
           label="分配工作"
-          width="180"
+         
           >
-          <template slot-scope="scope"> <el-button @click="toSee(scope.row)" type="text" size="small">分配</el-button></template>
+          <template slot-scope="scope"> <el-button @click="toShowDistribute(scope.row)" icon="el-icon-edit" type="text" size="small">分配</el-button></template>
         </el-table-column>
         <el-table-column
           prop=""
           label="操作"
-          width="180">
-          <template slot-scope="scope"> <el-button @click="toDelete(scope.row.id)" type="text" size="small">删除</el-button></template>
+         >
+          <template slot-scope="scope"> <el-button @click="toDelete(scope.row.id)" icon="el-icon-delete" type="text" size="small">删除</el-button></template>
         </el-table-column>
       </el-table>
     </div>
     
     <!-- 客服添加模态框 -->
-    <el-dialog title="添加客服" :visible.sync="toAddVisible" :before-close="beforeClose">
+    <el-dialog title="添加客服" :visible.sync="toAddVisible" :before-close="beforeClose" width="40%">
       <el-form :model="toAddCustomerService" :rules="rules" ref="ruleForm">
         <el-form-item label="手机号" prop="username" >
           <el-input v-model="toAddCustomerService.username" auto-complete="off" aria-required="请输入手机号"></el-input>
@@ -89,7 +102,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="toAddCustomerServiceSave('ruleForm')">添 加</el-button>
+        <el-button type="primary" @click="toAddCustomerServiceSave('ruleForm')" style="width :200px">添 加</el-button>
       </div>
     </el-dialog>
     <!-- 导入客服模态框 -->
@@ -97,34 +110,88 @@
       title="导入说明"
       :visible.sync="toImportVisible"
       width="40%"
-      :before-close="handleClose">
+      >
       <el-form >
         <el-form-item label="" prop="" class="import-content">
-          <p>使用导入功能时，请按照模板表格规定的字段去填写对应信息，您可以点击按钮下载模板表格，填写完后在下提交 </p>
-          <el-button size="mini" >下载模板</el-button>
+          <p style="margin-top:0;">使用导入功能时，请按照模板表格规定的字段去填写对应信息，您可以点击按钮下载模板表格，填写完后在下提交 </p>
+          <el-button size="mini" style="background: #555; color: #fff;" >下载模板</el-button>
         </el-form-item>
         <el-form-item label="" prop="" >
-          <input type="file" name="pic" id="pic" accept="image/gif,image/jpeg" />
+          <div style="display:flex; justify-content: center;">
+              <el-upload
+                class="upload-demo"
+                drag
+                action="https://jsonplaceholder.typicode.com/posts/"
+                multiple>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
+              </el-upload>
+          </div>
+              
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
-        <el-button type="primary" >确 定</el-button>
+        <el-button @click="toImportSave" type="primary" style="width :200px" >确 定</el-button>
       </span>
     </el-dialog>
-    
+    <!-- 客服分配模态框 -->
+    <el-dialog title="工作分配" :visible.sync="toDistributeVisible">
+      <div class="toImportHead">
+        <!-- <el-checkbox-group v-model="DistributeSelection">
+          <el-checkbox label="升序"></el-checkbox>
+          <el-checkbox label="降序"></el-checkbox>
+          <el-checkbox label="到期标记"></el-checkbox>
+        </el-checkbox-group> -->
+      <div class="left">
+
+        </div>
+        <div class="right">
+          <el-button type="info" size="mini" style="background: #555; color:#FFF;">自动分配</el-button>
+          <el-button type="info" size="mini" style="background: #555; color:#FFF;">自动填满</el-button>
+        </div>
+        
+      </div>
+      <el-table
+          :data="applicantList"
+           tooltip-effect="dark"
+          
+           style="width: 100%; margin-top:10px;">
+        <el-table-column property="" label="#" type="selection" width="55"></el-table-column>
+        <el-table-column property="name" label="求职者" width="80" align="center" header-align="center"></el-table-column>
+        <el-table-column property="phoneNum" label="联系方式"  align="center" header-align="center"></el-table-column>
+        <el-table-column property="huntingPositions" label="求职岗位" align="center" header-align="center"></el-table-column>
+        <el-table-column property="dealCustomerServicerealName" label="经手人" align="center" header-align="center"></el-table-column>
+        <el-table-column property="applicationTime" label="申请时间" sortable align="center" header-align="center"></el-table-column>
+      </el-table>
+      <div style="display: flex;justify-content: flex-end;">
+        <el-pagination
+          :page-size="pageSize"
+
+          :current-page.sync="currentPage"
+          background
+          @current-change="pageChange"
+          layout="prev, pager, next"
+          :total="applicant.length" 
+        ></el-pagination>
+      </div>
+      
+
+    </el-dialog>
     <div class="footerDiv">
       <div class="foot-button">
-          <el-button size="small" >自动分配</el-button>
-          <el-button size="small">自动填满</el-button>
+          <el-button type="info" size="mini" style="background: #555; color:#FFF;" >自动分配</el-button>
+          <el-button type="info" size="mini" style="background: #555; color:#FFF;">自动填满</el-button>
       </div>
       
       <div class="pageDiv">
         <el-pagination
           :page-size="pageSize"
-          :page-sizes="pageSizes"
+
           :current-page.sync="currentPage"
           background
+          small
           @current-change="pageChange"
           layout="prev, pager, next"
           :total="CustomerServiceData.length"
@@ -146,7 +213,7 @@ export default {
   data() {
     return {
           // 客服
-          CustomerService: "",
+          CustomerService:"",
           //  客服数组
           CustomerServiceData:[],
           //客服id
@@ -158,11 +225,12 @@ export default {
           CustomerServiceByGender:"",
           CustomerServiceByGenderData: [],
           //客服用户名
-          CustomerServiceByUsername: "",
+          CustomerServiceByUsername:"",
           //添加客服的模态框默认不显示
           toAddVisible: false,
           //客服导入的模态框默认不显示
           toImportVisible: false,
+          toDistributeVisible: false,
           //新增客服对象 默认其所有属性都为空
           toAddCustomerService:{
             gender:"",
@@ -178,12 +246,69 @@ export default {
                 realname: [{ required: true, message: "请输入你的真实名字", trigger: "blur" }],
                 username: [{ required: true, message: "请输入手机号", trigger: "blur" }],
            },
+          //按类别选择分类查找客服的搜索框的键入值
+          sercherBoxInput:"",
+          //搜索栏的下拉框所选择的值
+          sercherSelectInput:"",
            //当前页
           currentPage: 1,
           //每页条数
           pageSize: config.pageSize,
-          // pageSize: 8,
-          pageSizes:[],
+          //求职人
+          applicant:[
+            {
+              name: "黄茂扬",
+              phoneNum: "15862638131",
+              huntingPositions: "190/天上一休一连锁超市急招营业员",
+              dealCustomerServicerealName: "张三",
+              applicationTime: "2019/05/16",
+            },
+            {
+              name: "茂扬",
+              phoneNum: "15862638131",
+              huntingPositions: "190/天上一休一连锁超市急招营业员",
+              dealCustomerServicerealName: "张三",
+              applicationTime: "2019/05/21",
+            },
+            {
+              name: "黄茂扬",
+              phoneNum: "15862638131",
+              huntingPositions: "190/天上一休一连锁超市急招营业员",
+              dealCustomerServicerealName: "张三",
+              applicationTime: "2019/05/20",
+            },
+            {
+              name: "黄扬",
+              phoneNum: "15862638131",
+              huntingPositions: "190/天上一休一连锁超市急招营业员",
+              dealCustomerServicerealName: "张三",
+              applicationTime: "2019/05/29",
+            },
+            {
+              name: "扬",
+              phoneNum: "15862638131",
+              huntingPositions: "190/天上一休一连锁超市急招营业员",
+              dealCustomerServicerealName: "张三",
+              applicationTime: "2019/05/23",
+            },
+            {
+              name: "李伟",
+              phoneNum: "18812344321",
+              huntingPositions: "190/天上一休一连锁超市急招营业员",
+              dealCustomerServicerealName: "张三",
+              applicationTime: "2019/03/22",
+            },
+            {
+              name: "郝鸽鸽",
+              phoneNum: "18812348758",
+              huntingPositions: "190/天上一休一连锁超市急招营业员",
+              dealCustomerServicerealName: "张三",
+              applicationTime: "2019/07/23",
+            },
+          ],
+          //分配模态框里面的升序降序
+          DistributeSelection:[],
+          DistributeSelectionDaoqi:"",
           
     };
   },
@@ -193,11 +318,22 @@ export default {
       let temp = [...this.CustomerServiceData];
       let page = this.currentPage;
       let pageSize = config.pageSize;
-      this.pageSizes = temp.slice((page - 1) * pageSize, page * pageSize);
-      return this.pageSizes;
+      return temp.slice((page - 1) * pageSize, page * pageSize);
+
+    },
+    applicantList(){
+      let temp = [...this.applicant];
+      // alert(temp.lenght)
+      let page = this.currentPage;
+      let pageSize = config.pageSize;
+      return temp.slice((page - 1) * pageSize, page * pageSize);
     }
   },
   methods: {
+    //官方自带的表格排序算法
+    formatter(row, column) {
+        return row.address;
+      },
     //右上角，模态框关闭之前
     beforeClose() {
       this.$refs["ruleForm"].resetFields();
@@ -228,7 +364,6 @@ export default {
         });
         this.currentPage = 1;
         this.CustomerServiceByGenderData= [...new Set(gender)];
-        config.successMsg(this,'查找成功');
       }).catch((error)=>{config.errorMsg(this, "查找错误")});
     },
     //删除客服 
@@ -261,50 +396,20 @@ export default {
           });
         });
     },
-    //添加客服
+    //分配客服工作
+    toShowDistribute(id){
+      this.toDistributeVisible =true;
+    },
+    //添加客服模态框
     showAddDialg(){
       this.toAddVisible = true;
     },
     showImportDialg(){
       this.toImportVisible = true;
     },
-    toAddSave(formName){
-          //  this.toAddVisible = false;
-          //  console.log(this.toAddVisible);
-        this.$refs[formName].validate(async valid => {
-        if (valid) {
-            //通过验证
-            // console.log("aaaaaaaa");
-            // let realname= this.toAddCustomerService.realname;
-            // let username= this.toAddCustomerService.username;
-            // let gender  = this.toAddCustomerService.gender;
-            // if(realname ==="" || username ==="" ||username.length < 12){
-            //     return false; 
-            // } 
-            // saveOrUpdateCustomerService()
-            
-            
-            //保存
-            try {
-              let res = await saveOrUpdateCustomerService(this.toAddCustomerService);
-              if (res.status === 200) {
-                this.find_AllCustomerService();
-                this.$refs[formName].resetFields();
-                this.toAddVisible = false;
-                this.currentPage = 1;
-                config.successMsg(this, "添加成功");
-              } else {
-                config.errorMsg(this, "添加失败");
-              }
-            } catch (error) {
-              console.log(error);
-              config.errorMsg(this, "添加失败");
-            }
-          } else {
-            console.log("error submit!!");
-            return false;
-          }
-      });
+    toImportSave(){
+
+      this.toImportVisible = false;
     },
     //在添加客服的模态框的性别单选框改变时触发
     toChangeRadioGender(val){
@@ -313,36 +418,63 @@ export default {
       (val=='1')?(that.toAddCustomerService.gender ="男"):(that.toAddCustomerService.gender = "女");
       // console.log(that.toAddCustomerService.gender);
     },
+    //右上角select选择器的状态选择+输入的处理
+    toSercherCustomerService(){
+      let that = this;
+       // 111代表id，222代表用户名
+       ( that.sercherSelectInput == "111") ?that.find_CustomerServiceById()
+       :(that.sercherSelectInput == "222") ?that.find_CustomerServiceByUsername()
+       :config.errorMsg(this, "请选择查询类别"); 
+    },
+    //通过id获取客服
+    
+    async find_CustomerServiceById(){
+      let that = this;
+      try {
+        let res = await findCustomerServiceById({id:that.sercherBoxInput});
+        that.CustomerServiceData = [res.data];
+        that.currentPage = 1;
+
+      } catch (error) {
+        console
+        config.errorMsg(that, "查找错误");
+      }
+    },
+    //通过用户名获取客服
+    async find_CustomerServiceByUsername(){
+      let that = this;
+      try {
+        let res = await findCustomerServiceByUsername(that.sercherBoxInput);
+        that.CustomerServiceData = res.data;
+        that.currentPage = 1;
+
+      } catch (error) {
+        config.errorMsg(that, "查找错误");
+      }
+    },
+    //通过真实名字获取客服
+
     //添加客服的模态框的添加的按钮事件
     toAddCustomerServiceSave(formName){
       this.toAddVisible = true;
         this.$refs[formName].validate(async valid => {
         if (valid) {
             //通过验证
-            console.log("aaaaaaaa");
-            let realname= this.toAddCustomerService.realname;
-            let username= this.toAddCustomerService.username;
-            let gender  = this.toAddCustomerService.gender;
-            // if(realname ==="" || username ==="" ||username.length < 12){
-            //     return false; 
-            // } 
-            // saveOrUpdateCustomerService()
-            
-            
+
             //保存
             try {
               let res = await saveOrUpdateCustomerService(this.toAddCustomerService);
               if (res.status === 200) {
                 this.find_AllCustomerService();
                 this.$refs[formName].resetFields();
-                this.editVisible = false;
-                config.successMsg(this, "修改成功");
+                this.toAddVisible = false;
+                config.successMsg(this, "添加成功");
               } else {
-                config.errorMsg(this, "修改失败");
+                config.errorMsg(this, "添加失败");
               }
             } catch (error) {
               console.log(error);
-              config.errorMsg(this, "修改失败");
+              config.errorMsg(this, "添加失败");
             }
           } else {
             console.log("error submit!!");
@@ -390,13 +522,45 @@ export default {
 };
 </script>
 <style scoped>
+.controler{
+  position: absolute;
+  top: 1%;
+  right: 2%;
+}
+.searchDIV{
+  display: flex;
+  justify-content: space-between;
+}
+.tableDiv{
+  margin-top: 1%;
+  /* width: 90%; */
+}
+.footerDiv{
+  margin-top: 20px;
+  display: flex;
+  /* flex-direction: row; */
+  justify-content: space-between
+}
+.right-searchDIV{
+  width: 23%;
+}
 .import-content p{
   width: 80%;
   float: left;
-}.import-content el-button{
-  position: relative;
-  top:50%;
 }
-      
+.toImportHead{
+  display: flex;
+  /* flex-direction: row; */
+  justify-content: space-between
+}
+.dialog-footer{
+  position: relative;
+  left: -32%;
+
+}
+.up-load-file{
+  position: relative;
+  left: -38%;
+}    
 
 </style>

@@ -14,24 +14,24 @@
         <el-tab-pane prop="temp" label="待联系" name="waiteConn"></el-tab-pane>
         <el-tab-pane label="已联系" name="finishConn"></el-tab-pane>
       </el-tabs>
+      
     <el-table
       :data="jobList"
       style="width: 100%">
       <el-table-column
-        prop="jobhunter.realname" label="求职人" width="180">
+        prop="jobhunter.realname" label="求职人" width="250">
       </el-table-column>
       <el-table-column
-        prop="jobhunter.telephone" label="联系方式" width="180">
+        prop="jobhunter.telephone" label="联系方式" width="250">
       </el-table-column>
       <el-table-column
-        prop="employment.job" label="求职岗位" width="180">
+        prop="employment.job" label="求职岗位" width="250">
       </el-table-column>
-      <el-table-column
-         label="简历" width="180">
+       <el-table-column
+         label="简历" width="250">
          <template slot-scope="scope">
         <el-button @click="toSee(scope.row)" type="text" size="small">查看简历</el-button>
       </template>
-     
       </el-table-column>
       <el-table-column
         prop="askTime" label="申请时间">
@@ -43,6 +43,7 @@
       :value="item.value">
     </el-option> -->
     </el-table>
+    
   </template>
       <div class="pageDiv">
         <el-pagination
@@ -53,8 +54,7 @@
           :total="WithJobhAndEmplData.length"
         ></el-pagination>
       </div>
-   <el-dialog :title="currentJober.realname" :visible.sync="seeVisible"
-  >
+   <el-dialog :title="currentJober.realname" :visible.sync="seeVisible" width=30%>
   <!-- {{currentJober}} -->
       <div class="seeDiv">
         <div style="margin-top:-25px">
@@ -95,7 +95,6 @@ export default {
       //       resume:'一张白纸',
       //       askTime:'2019-12-24'
       //     }], 
-  
       // username:"",
       // telephone:"",
       // job:"",
@@ -158,7 +157,6 @@ export default {
 
         // });
         // console.log(temp);
-        
         this.WithJobhAndEmplData = temp;
         this.currentPage = 1;
         this.WithJobhAndEmplData.forEach(item=>{
@@ -184,7 +182,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .seeDiv {
-
   border-bottom: 2px solid #ccc;
   line-height: 40px;
   font-weight: bold;
@@ -193,7 +190,7 @@ export default {
   }
 }
 .pageDiv {
-    float: left;
+    float: right;
     margin-top: 20px;
   }
 </style>
