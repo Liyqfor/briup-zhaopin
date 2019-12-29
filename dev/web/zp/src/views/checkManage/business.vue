@@ -3,7 +3,7 @@
  * 商家审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-28 10:02:19
+ * @Last Modified time: 2019-12-29 11:25:53
  */
 <template>
   <div id="businessCheck">
@@ -149,14 +149,19 @@
       </el-input> -->   
       <el-form :inline="true" :model="currentBus" class="demo-form-inline">
           <el-form-item label="审批人">
-        <el-input v-model="currentBus.status" ></el-input>
+        <el-input type="textarea"
+        style="width:425px"
+        :rows="5"
+        :col="3" ></el-input>
           </el-form-item>
       </el-form>
       <!-- {{textarea}} -->
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="dialogtoqx">取 消</el-button>
-      <el-button type="primary" @click="dialogtoqd">确 定</el-button>
-    </span>
+      <div class="footer_jj">
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogtoqx">取 消</el-button>
+          <el-button type="primary" @click="dialogtoqd">确 定</el-button>
+        </span>
+      </div>
   </el-dialog>
 
 
@@ -223,12 +228,14 @@ export default {
     },
     async dialogtoqd(){
       // this.textarea='';
-      let inp=this.currentBus.status;
-      console.log(inp);
-      this.currentBus.status=inp;
+      // let inp=this.currentBus.status;
+      // console.log(inp);
+      this.currentBus.status="审核未通过";
        try {
               // this.currentBus.status=jj;
-               let res=await saveOrUpdateBusiness(this.currentBus);    
+               
+               let res=await saveOrUpdateBusiness(this.currentBus);
+                   
               if(res.status===200)
               {    
                   
@@ -301,6 +308,7 @@ export default {
       async toEdit(row){
         let jj="审核通过";
         this.currentBus = { ...row };
+        console.log(this.currentBus.status);
         this.currentBus.status=jj;
          try {
               // this.currentBus.status=jj;
@@ -402,6 +410,9 @@ export default {
   border-bottom: 1px solid #ccc;
 }
 .imgDiv {
+  text-align: center;
+}
+.footer_jj{
   text-align: center;
 }
 </style>

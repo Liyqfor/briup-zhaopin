@@ -8,7 +8,7 @@
 <template>
   <div id="businessList">
     <div class="searchDiv">
-      <el-select @change="provinceChange" size="mini" v-model="province" clearable placeholder="省份">
+      <el-select @change="provinceChange"  v-model="province" clearable placeholder="省份">
         <el-option
           v-for="item in provinceData"
           :key="item.id"
@@ -16,13 +16,13 @@
           :value="item.name"
         ></el-option>
       </el-select>
-      <el-select @change="cityChange" size="mini" v-model="city" clearable placeholder="城市">
+      <el-select @change="cityChange"  v-model="city" clearable placeholder="城市">
         <el-option v-for="item in cityData" :key="item.id" :label="item.name" :value="item.name"></el-option>
       </el-select>
-      <el-select @change="industryChange" size="mini" v-model="industry" clearable placeholder="行业">
+      <el-select @change="industryChange"  v-model="industry" clearable placeholder="行业">
         <el-option v-for="item in industryData" :key="item" :label="item" :value="item"></el-option>
       </el-select>
-      <el-select @change="scaleChange" size="mini" v-model="scale" clearable placeholder="规模">
+      <el-select @change="scaleChange"  v-model="scale" clearable placeholder="规模">
         <el-option v-for="item in scaleData" :key="item" :label="item" :value="item"></el-option>
       </el-select>
     </div>
@@ -212,8 +212,8 @@
        
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="toCancel('ruleFrom')">取 消</el-button>
-        <el-button size="mini" type="primary" @click="toSave('ruleFrom')">确 定</el-button>
+        <el-button  @click="toCancel('ruleFrom')">取 消</el-button>
+        <el-button  type="primary" @click="toSave('ruleFrom')">确 定</el-button>
       </div>
     </el-dialog>
   </div>

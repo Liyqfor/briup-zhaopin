@@ -1,46 +1,43 @@
+/***
+ * @Author:Ivan
+ * @Date:2019-12-25 09:33:03
+ * @LastModifiedBy:Ivan
+ * @Last Modified time:2019-12-29 09:26:06
+ */
+
+
 /*
  * @Author: liuyr 
  * 城市模块API
  * @Date: 2019-12-22 18:54:17 
  * @Last Modified by: liuyr
- * @Last Modified time: 2019-12-25 09:34:10
+ * @Last Modified time: 2019-12-22 19:53:09
  */
 import axios from '@/utils/axios'
-/**
- * 通过id删除城市信息
- * @param {Object} param {id:''} 
- */
-export function deleteCityById(param) {
-  return axios.post('/City/deleteById', param);
+
+ /**
+  * 根据id删除城市
+  * @param {object} param {id:''} 
+  */
+ export function deleteCityById(id) {
+  return axios.post('/City/deleteById',id);
 }
-/**
- * 查找所有城市信息
- */
-export function findAllCity() {
-  return axios.get('/City/findAll');
+
+/* 查找全部城市数据 */
+export  function findAllCity() {
+  return axios.get('/City/findAll'); 
 }
-/**
- * 通过id查找城市信息
- * @param {Object} param {id:''}
- */
-export function findCityById(param) {
-  return axios.get('/City/findById', {
-    params: param
-  });
+//根据id查找城市
+export function findByIdCity(id) {
+  return axios.get('/City/findById',{params:{id}});
 }
-/**
- * 通过省份id查找城市信息
- * @param {Object} param {provinceId:''}
- */
-export function findCityByProvinceId(param) {
-  return axios.get('/City/findByProvinceId', {
-    params: param
-  });
+//根据省份查找城市
+export function findCityByProvinceId(provinceId) {
+  return axios.get('/City/findByProvinceId',{params:{provinceId}});
 }
-/**
- * 保存或更新城市信息
- * @param {Object} param
- */
-export function saveOrUpdateCity(param) {
-  return axios.post('/City/saveOrUpdate', param);
+//新增或更新城市信息
+export function saveOrUpdateCity(infor) {
+  return axios.post('/City/saveOrUpdate',infor);
 }
+
+//post.('',params)
