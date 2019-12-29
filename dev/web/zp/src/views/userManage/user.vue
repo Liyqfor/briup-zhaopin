@@ -3,10 +3,15 @@
  * 用户列表页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: weilei
- * @Last Modified time: 2019-12-28 15:53:34
+ * @Last Modified time: 2019-12-29 10:04:18
  */
 <template>
+
   <div id="userList">
+    <div class="btnDiv">
+      <el-button type="primary" @click="toAdd()"  icon="el-icon-info" style="background:#ee7942" size="mini">添加用户</el-button>
+      <el-button type="primary" @click="toImport()"  icon="el-icon-info" style="background:#4876ff" size="mini">导入用户</el-button>
+    </div>
     <div class="searchDiv">
       <div class="selectbox1">
         <el-select @change="educationChange" v-model="education" placeholder="学历" style="width:200px" clearable>
@@ -23,32 +28,14 @@
         </el-select>
       </div>
       <div class="selectbox2">
-        <el-row :gutter="50">
-          <el-col :span="6">
-            <el-select v-model="keyword" placeholder="关键字" style="width:100px" clearable>
+        <el-input clearable @change="inputChange" placeholder="请输入内容" v-model="searchKeyword" size="mini">
+            <el-select style="width:100px" v-model="searchType" slot="prepend" placeholder="请选择" clearable>
               <el-option label="用户名" value="1"></el-option>
               <el-option label="手机号" value="2"></el-option>
-            </el-select>       
-          </el-col>
-          <el-col :span="12">       
-            <el-autocomplete
-              class="inline-input"
-              v-model="telephone"
-              :fetch-suggestions="querySearch"
-              placeholder="请输入内容"
-              :trigger-on-focus="false"
-              @select="handleSelect"
-            ></el-autocomplete>
-          </el-col>
-        </el-row>
+            </el-select>
+            <el-button @click="searchForUser(searchKeyword)" slot="append" icon="el-icon-search"></el-button>
+          </el-input>
 
-        <!-- <el-input placeholder="请输入内容" v-model="input" style="width:400px">
-          <el-select v-model="keyword" slot="prepend" placeholder="关键字" style="width:100px" clearable>
-          <el-option label="用户名" value="item"></el-option>
-          <el-option label="手机号" value="item"></el-option>
-          </el-select>        
-          <el-button @click="toSearch" slot="append" icon="el-icon-search"></el-button>
-        </el-input>      -->
       </div>
     </div>  
     
@@ -90,7 +77,7 @@
     <!-- 修改模态框 -->
     <el-dialog title="修改用户信息" :visible.sync="editVisible" width="60%" :before-close="beforeClose">
       <el-form :model="currentUser" :rules="rules" ref="ruleForm">
-        {{telephoneData}}
+        {{currentUser}}
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item prop="username" label="用户名" :label-width="formLabelWidth">
@@ -111,7 +98,8 @@
           </el-col>
           <el-col :span="12">
             <el-form-item required label="出生年月" :label-width="formLabelWidth" prop="birth">
-                <el-date-picker type="date" placeholder="选择出生年月" v-model="currentUser.birth" style="width: 100%;"></el-date-picker>
+                <el-date-picker type="date" placeholder="选择出生年月" v-model="currentUser.birth" style="width: 100%;" format="yyyy 年 MM 月 dd 日"
+      value-format="yyyy-MM-dd"></el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
@@ -145,11 +133,44 @@
         <el-button size="mini" type="primary" @click="toSave('ruleForm')">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="添加用户" :visible.sync="addVisible">
+      <el-form :model="adduser" :rules="rules" ref="ruleForm">
+        <el-form-item prop="username" label="用户名" :label-width="formLabelWidth">
+          <el-input v-model="adduser.username" clearable></el-input>
+        </el-form-item>
+        <el-form-item prop="telephone" label="手机号" :label-width="formLabelWidth">
+          <el-input v-model="adduser.telephone" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addVisible = false">取 消</el-button>
+        <el-button type="primary" @click="toIn('ruleForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog
+      title="导入说明"
+      :visible.sync="importVisible"
+      width="50%"
+      :before-close="handleClose">
+      <el-row>
+        <el-col :span="19"><span>使用导入功能时，请按照模板表格规定的字段去填写对应信息，</span></el-col>
+        <el-col :span="5"><el-button size="mini" style="background:#4876ff; color:#fff">下载模板</el-button></el-col>
+      </el-row>
+      <span>您可以点击按钮下载模板表格，填写完后在下提交 ：</span>
+      <br>
+      <br>
+      <br>
+      <div class="box">点击选择文件或将表格拖动到框内</div>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="importVisible = false" style="background:green; color:#000" size="mini">开始导入</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import {findAllJobhunter,findJobhunterByEducation,findJobhunterByGender,deleteJobhunterById,saveOrUpdateJobhunter,findJobhunterByTelephone} from "@/api/user.js";
+import {findAllJobhunter,findJobhunterByEducation,findJobhunterByGender,deleteJobhunterById,saveOrUpdateJobhunter,findJobhunterByTelephone,findJobhunterByUsername} from "@/api/user.js";
 import config from "@/utils/config.js";
 import { async } from 'q';
 export default {
@@ -159,10 +180,6 @@ export default {
       education:'',
       //性别
       gender:'',
-      telephone:'',
-      telephoneData:[],
-      // input:'',
-      keyword:{},
       educationData:[],
       genderData:[],
       userData:[],
@@ -170,8 +187,11 @@ export default {
       currentPage:1,
       ids: [],
       editVisible: false,
+      addVisible: false,
+      importVisible:false,
       formLabelWidth: "80px",
       //当前查看或修改的对象
+      adduser:{},
       currentUser: {},
       rules: {
         username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
@@ -194,8 +214,11 @@ export default {
         birth: [
           { required: true, message: "请选择出生年月", trigger: "change" }
         ],
-      },
 
+      },
+      searchTypeValue:'',
+      searchKeyword:'',
+      searchType:'',
       
     };
   },
@@ -208,30 +231,42 @@ export default {
     }
   },
   methods: {
-    querySearch(queryString, cb) {
-        let array = this.array;
-        let results = queryString ? array.filter(this.createFilter(queryString)) : array;
-        // 调用 callback 返回建议列表的数据
-        cb(results);
-      },
-      createFilter(queryString) {
-        return (telephone) => {
-          return (telephone.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-      loadAll() {
-        let temp = [...this.telephoneData];
-        
-        this.array = [];
-        for(let i=0;i<temp.length;i++){
-          this.array.push({'value':temp[i].restaurant})
+    inputChange(searchKeyword){
+      this.findAllJob();
+    },
+    
+    async searchForUser(searchKeyword){
+      if(this.searchType === "2"){
+        if(searchKeyword){
+          
+          try {
+            let res = await findJobhunterByTelephone({telephone:searchKeyword});
+            this.userData = res.data;
+            this.currentPage = 1;
+          } catch (error) {
+            config.errorMsg(this,'请输入与'+'this.'+'相关的关键字');
+          }
         }
-        return this.array;
-            
-      },
-      handleSelect(item) {
-        console.log(item);
-      },
+        else{
+          this.findAllJob();
+        }
+      }
+      else{
+        if(searchKeyword){
+          try {
+            let res = await findJobhunterByUsername({username:searchKeyword});
+            this.userData = res.data;
+            this.currentPage = 1;
+          } catch (error) {
+            config.errorMsg(this,'请输入与'+'searchType'+'相关的关键字');
+          }
+        }
+        else{
+          this.findAllJob();
+        }
+      }
+      
+    },
     //右上角，模态框关闭之前
     beforeClose() {
       this.$refs["ruleForm"].resetFields();
@@ -243,6 +278,7 @@ export default {
       this.$refs[formName].resetFields();
       this.editVisible = false;
     },
+    
     //保存
     toSave(formName) {
       this.$refs[formName].validate(async valid => {
@@ -253,6 +289,7 @@ export default {
             if (res.status === 200) {
               this.findAllJob();
               this.editVisible = false;
+             
               config.successMsg(this, "修改成功");
             } else {
               config.errorMsg(this, "修改失败");
@@ -260,6 +297,29 @@ export default {
           } catch (error) {
             // console.log(error);
             config.errorMsg(this, "修改失败");
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    toIn(formName) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          //通过验证，保存
+          try {
+            let res = await saveOrUpdateJobhunter(this.adduser);
+            if (res.status === 200) {
+              this.findAllJob();
+              this.addVisible = false;
+              config.successMsg(this, "添加成功");
+            } else {
+              config.errorMsg(this, "添加失败");
+            }
+          } catch (error) {
+            // console.log(error);
+            config.errorMsg(this, "添加失败");
           }
         } else {
           console.log("error submit!!");
@@ -297,12 +357,20 @@ export default {
           this.userData = res.data;
           this.currentPage = 1;
         }catch(error){
-          config.errorMsg(this,'通过学历查找用户信息错误');
+          config.errorMsg(this,'通过性别查找用户信息错误');
         }
       } else{
         this.findAllJob();
       }
       
+    },
+    toAdd(){
+      this.username = "";
+      this.telephone = "";
+      this.addVisible = true;
+    },
+    toImport(){
+      this.importVisible=true;
     },
     //编辑
     toEdit(row){
@@ -393,6 +461,7 @@ export default {
       try{
       let res = await findAllJobhunter();
       this.userData = res.data;
+      
       //学历数组
       let educationArr = res.data.map(item => {
         return item.education;
@@ -403,25 +472,24 @@ export default {
         return item.gender;
       });
       this.genderData = [...new Set(genderArr)];
-      
-      //性别数组
-      let telephoneArr = res.data.map(item => {
-        return item.telephone;
-      });
-      this.telephoneData = [...new Set(telephoneArr)];
 
       }catch(error){
         config.errorMsg(this, "查找错误");
       }
-      
-    }
+    },
+    handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      }
   },
   created() {
     this.findAllJob();
   },
-  mounted() {
-    this.restaurants = this.loadAll();
-  }
+  mounted() {}
+ 
 };
 </script>
 <style scoped>
@@ -441,7 +509,25 @@ export default {
 .pagi{
     float: right;
     margin-top: 10px;
+}
+.btnDiv{
 
+  width: 1300px;
+  margin-top: -50px;
+  margin-bottom: 20px;
+  text-align: right;
+  position: fixed;
+}
+.dialog-footer{
+  text-align: center;
+}
+.box{
+  margin: 0 auto;;
+  height: 200px;
+  width: 300px;
+  border: 1px dashed silver;
+  text-align: center;
+  padding-top: 80px;
 }
 
 </style>
