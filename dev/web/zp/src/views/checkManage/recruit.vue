@@ -3,7 +3,7 @@
  * 招聘审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-29 19:06:05
+ * @Last Modified time: 2019-12-29 19:35:15
  */
 <template>
   <div id="recruitCheck">
@@ -90,7 +90,7 @@
               <div v-if="scope.row.auditStatus==='审核通过'">
                     <span class="tg_span">审核通过</span>
               </div>
-               <div v-if="scope.row.auditStatus==='审核未通过'">
+               <div v-if="scope.row.auditStatus==='审核未通过' ">
                     <span  class="jj_span">已拒绝</span>
               </div>
              
@@ -538,7 +538,7 @@ export default {
   float: right;
   width: 300px;
   .el-select{
-    width: 90px;
+    width: 110px;
   }
 }
 .selectDiv{

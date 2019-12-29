@@ -13,7 +13,7 @@
  * 商家审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-29 17:12:01
+ * @Last Modified time: 2019-12-29 19:17:23
  */
 <template>
   <div id="businessCheck">
@@ -384,6 +384,17 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.tonguo{
+     width: 30px;
+     color: #fff;
+    background-color: #008000;
+}
+.jujue{
+     width: 30px;
+     color: #fff;
+    
+    background-color: #FF0000;
+}
 .tableDiv {
   margin-top: 10px;
 }
