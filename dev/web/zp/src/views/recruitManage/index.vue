@@ -3,7 +3,7 @@
  * 招聘管理页面
  * @Date: 2019-12-22 16:49:20 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2019-12-29 17:19:08
+ * @Last Modified time: 2019-12-29 20:49:18
  */
 <template>
   <div id="recruitManage">
@@ -30,19 +30,19 @@
 
       <!-- 发布模态框 -->
       <div class="releaseBox">
-      <el-dialog title="发布" class="editBox" :visible.sync="editVisible" :before-close="beforeClose">
+      <el-dialog title="编辑" class="editBox"  :visible.sync="editVisible" :before-close="beforeClose">
         <el-form :model="toSeeTitle" ref="ruleForm" :rules="rules">
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="ID号" prop="id" :label-width="formLabelWidth">
+            <el-form-item label="招聘ID号" prop="id" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.id"></el-input>
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
-            <el-form-item label="职业ID" prop="jobid" :label-width="formLabelWidth">
-              <el-input v-model="toSeeTitle.jobId"></el-input>
+            <el-form-item label="职业ID号" prop="jobid" :label-width="formLabelWidth">
+              <el-input v-model="toSeeTitle.job_id"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -56,7 +56,7 @@
           
           <el-col :span="12">
             <el-form-item label="职业类型" prop="job" :label-width="formLabelWidth">
-                <el-select @change="JobSelect" clearable v-model="toSeeTitle.job" placeholder="职位类型" >
+                        <el-select @change="JobSelect" clearable v-model="toSeeTitle.job" placeholder="职位类型" >
             <el-option class="oooo"
               
               v-for="item in jobData"
@@ -72,7 +72,9 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="企业名称" prop="businessId" :label-width="formLabelWidth">
+              <!-- <el-input v-model="businessName"></el-input> -->
                 <el-select
+                      @change="dialogProChange"
                       v-model="toSeeTitle.businessId"
                       placeholder="请选择企业">
                       <el-option
@@ -97,7 +99,7 @@
             <el-form-item label="所在省份" prop="province" :label-width="formLabelWidth">
               <!-- <el-input v-model="toSeeTitle.province"></el-input> -->
                 <el-select
-                      @change="dialogProChan"
+                      @change="dialogProChange"
                       v-model="toSeeTitle.province"
                       placeholder="请选择省份">
                       <el-option
@@ -112,8 +114,8 @@
           
           <el-col :span="12">
             <el-form-item label="所在城市" prop="city" :label-width="formLabelWidth">
+              <!-- <el-input v-model="toSeeTitle.city"></el-input> -->
                 <el-select
-                      @change="citychange"
                       v-model="toSeeTitle.city"
                       placeholder="请选择城市">
                       <el-option
@@ -128,23 +130,11 @@
         </el-row>
 
 
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="福利" prop="welfare" :label-width="formLabelWidth">
-              <el-input v-model="toSeeTitle.welfare"></el-input>
-            </el-form-item>
-          </el-col>
-          
-          <el-col :span="12">
-            <el-form-item label="每日工时" prop="workingHours" :label-width="formLabelWidth">
-              <el-input v-model="toSeeTitle.workingHours"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
+
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="发布人" prop="contactName" :label-width="formLabelWidth">
+            <el-form-item label="发布人员" prop="contactName" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.contactName"></el-input>
             </el-form-item>
           </el-col>
@@ -158,13 +148,13 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="状态" prop="status" :label-width="formLabelWidth">
+            <el-form-item label="当前状态" prop="status" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.status"></el-input>
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
-            <el-form-item label="审核" prop="auditStatus" :label-width="formLabelWidth">
+            <el-form-item label="审核状态" prop="auditStatus" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.auditStatus"></el-input>
             </el-form-item>
           </el-col>
@@ -172,13 +162,15 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="月薪" prop="salary" :label-width="formLabelWidth">
+            <el-form-item label="每月薪水" prop="salary" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.salary"></el-input>
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
-            <div></div>
+            <el-form-item label="每日工时" prop="workingHours" :label-width="formLabelWidth">
+              <el-input v-model="toSeeTitle.workingHours"></el-input>
+            </el-form-item>
           </el-col>
         </el-row>
 
@@ -194,12 +186,49 @@
 
         <el-row>
           <el-col :span="24">
+            <el-form-item label="公司福利" prop="welfare" :label-width="formLabelWidth">
 
-            <el-button class="editbutton" @click="toCancel('ruleForm')">取 消</el-button>
-            <el-button class="editbutton" type="primary" @click="toSave('ruleForm')">保 存</el-button>
+              <!-- 标签显示，可删除 -->
+              <el-tag style="margin-right:3px;"
+                closable
+                :key="tag"
+                v-for="tag in welfareData"
+                @close="tagclose(tag)"
+                :disable-transitions="false">
+                {{tag}}
+              </el-tag>
+
+              <!-- 新建标签 -->
+              <el-input
+                class="input-new-tag"
+                v-if="inputVisible"
+                v-model="inputValue"
+                ref="saveTagInput"
+                size="small"
+                @keyup.enter.native="handleInputConfirm"
+                @blur="handleInputConfirm">
+              </el-input>
+              <el-button v-else class="button-new-tag" size="small" @click="showInput">+</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="24">
+
+            <div class="editBtnBox">
+              <el-button class="editbutton" type="primary" @click="toSave('ruleForm')">保 存</el-button>
+              <el-button class="editbutton" @click="toCancel('ruleForm')">取 消</el-button>
+               
+
+            </div>
+
+
             
           </el-col>
         </el-row>
+
+
         </el-form>
 
       </el-dialog>
@@ -232,6 +261,8 @@ export default {
   name: "recruitManage",
   data() {
     return {
+      inputVisible: false, inputValue: '',
+      welfareData:[], 
       activeName: "doing",
       provinceData:[],provinceCityData:[], //这里是模态框编辑数据使用的省份和城市选择数组，因为后台没有给相应接口
       formLabelWidth:"80px",
@@ -301,14 +332,40 @@ export default {
       this.$router.push("/recruitManage/index/" + tab.name);
     },
 
+    //标签管理
+    //----新建标签----
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+
+      handleInputConfirm() {
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          this.welfareData.push(inputValue);
+        }
+        this.inputVisible = false;
+        this.inputValue = '';
+      },
+
+
+    //----关闭标签----
+    tagclose(tag) {
+      this.welfareData.splice(this.welfareData.indexOf(tag), 1);
+      },
+
   
 
     //编辑模态框省份发生改变
-    async dialogProChan(val){
+    async dialogProChange(val){
       
       try {
         let res = await findCityByProvinceId({provinceId:val});
         this.provinceCityData = res.data;
+
+        
       
       } catch (error) {}
     },
@@ -339,11 +396,14 @@ export default {
   //表单验证
      this.$refs[formName].validate(async(valid) => {
           if (valid) {
-                            // 将省份id转换为省份名字保存到数据库
+                // 将省份id转换为省份名字保存到数据库
                 if(!isNaN(this.toSeeTitle.province)){
                   let provinceId = this.toSeeTitle.province;
                   let res1 = await findProvinceById({id:provinceId});
                   this.toSeeTitle.province = res1.data.name;
+
+                //将福利信息转换格式保存
+                this.toSeeTitle.welfare=this.welfareData;
               
                 }
               
@@ -477,13 +537,13 @@ export default {
 
 .cardChangeBox{
   float: left;
-  width: 82%;
+  width: 70%;
 }
 
 .btnBox{
   float:right;
-  width: 18%;
-  
+  width: 30%;
+  min-width: 220px;
 }
 .btnBox>*{
   float: right;
@@ -494,5 +554,12 @@ export default {
   width: 100%;
   float: left;
 }
+
+.editBtnBox{
+  text-align: center;
+}
+
+
+
 
 </style>

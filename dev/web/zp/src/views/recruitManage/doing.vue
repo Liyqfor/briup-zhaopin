@@ -3,7 +3,7 @@
  * 招聘中页面
  * @Date: 2019-12-23 17:03:30 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2019-12-29 17:28:48
+ * @Last Modified time: 2019-12-29 20:47:48
  */
 <template>
   <div id="recruitDoing">    
@@ -144,7 +144,12 @@
           <div class="twoFlour Flour">
 
             <div class="tagBox">
-              <el-tag type="success">{{toSeeTitle.welfare}}</el-tag>
+              <el-tag style="margin-right:3px;"
+                :key="tag"
+                v-for="tag in welfareData"
+                :disable-transitions="false">
+                {{tag}}
+              </el-tag>
             </div>
 
           </div>
@@ -193,18 +198,18 @@
       </el-dialog>
 
       <!-- 编辑模态框 -->
-      <el-dialog title="编辑" class="editBox" :visible.sync="editVisible" :before-close="beforeClose">
+      <el-dialog title="编辑" class="editBox"  :visible.sync="editVisible" :before-close="beforeClose">
         <el-form :model="toSeeTitle" ref="ruleForm" :rules="rules">
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="ID号" prop="id" :label-width="formLabelWidth">
+            <el-form-item label="招聘ID号" prop="id" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.id"></el-input>
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
-            <el-form-item label="职业ID" prop="jobid" :label-width="formLabelWidth">
+            <el-form-item label="职业ID号" prop="jobid" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.job_id"></el-input>
             </el-form-item>
           </el-col>
@@ -293,23 +298,11 @@
         </el-row>
 
 
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="福利" prop="welfare" :label-width="formLabelWidth">
-              <el-input v-model="toSeeTitle.welfare"></el-input>
-            </el-form-item>
-          </el-col>
-          
-          <el-col :span="12">
-            <el-form-item label="每日工时" prop="workingHours" :label-width="formLabelWidth">
-              <el-input v-model="toSeeTitle.workingHours"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
+
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="发布人" prop="contactName" :label-width="formLabelWidth">
+            <el-form-item label="发布人员" prop="contactName" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.contactName"></el-input>
             </el-form-item>
           </el-col>
@@ -323,13 +316,13 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="状态" prop="status" :label-width="formLabelWidth">
+            <el-form-item label="当前状态" prop="status" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.status"></el-input>
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
-            <el-form-item label="审核" prop="auditStatus" :label-width="formLabelWidth">
+            <el-form-item label="审核状态" prop="auditStatus" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.auditStatus"></el-input>
             </el-form-item>
           </el-col>
@@ -337,13 +330,15 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="月薪" prop="salary" :label-width="formLabelWidth">
+            <el-form-item label="每月薪水" prop="salary" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.salary"></el-input>
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
-            <div></div>
+            <el-form-item label="每日工时" prop="workingHours" :label-width="formLabelWidth">
+              <el-input v-model="toSeeTitle.workingHours"></el-input>
+            </el-form-item>
           </el-col>
         </el-row>
 
@@ -359,9 +354,43 @@
 
         <el-row>
           <el-col :span="24">
+            <el-form-item label="公司福利" prop="welfare" :label-width="formLabelWidth">
 
-            <el-button class="editbutton" @click="toCancel('ruleForm')">取 消</el-button>
-            <el-button class="editbutton" type="primary" @click="toSave('ruleForm')">保 存</el-button>
+              <!-- 标签显示，可删除 -->
+              <el-tag style="margin-right:3px;"
+                closable
+                :key="tag"
+                v-for="tag in welfareData"
+                @close="tagclose(tag)"
+                :disable-transitions="false">
+                {{tag}}
+              </el-tag>
+
+              <!-- 新建标签 -->
+              <el-input
+                class="input-new-tag"
+                v-if="inputVisible"
+                v-model="inputValue"
+                ref="saveTagInput"
+                size="small"
+                @keyup.enter.native="handleInputConfirm"
+                @blur="handleInputConfirm">
+              </el-input>
+              <el-button v-else class="button-new-tag" size="small" @click="showInput">+</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="24">
+            
+            <div class="btnBox">
+              <el-button class="editbutton" type="primary" @click="toSave('ruleForm')">保 存</el-button>
+               <el-button class="editbutton" @click="toCancel('ruleForm')">取 消</el-button>
+            
+
+            </div>
+           
             
           </el-col>
         </el-row>
@@ -387,10 +416,12 @@ import config from '@/utils/config.js';
 export default {
   data() {
     return { 
+      inputVisible: false, inputValue: '',//新建标签用到的属性
+      welfareData:[],                      //遍历福利用到的属性
       provinceData:[],provinceCityData:[], //这里是模态框编辑数据使用的省份和城市选择数组，因为后台没有给相应接口
-      formLabelWidth:"80px",
-      businessName:"",
-      AllBusiness:"",
+      formLabelWidth:"80px",                //模态框统一宽度
+      businessName:"",                        
+      AllBusiness:"",                      //商家信息，用于把商家id转换为商家名称
       string:"",
       matchData:"",
       editVisible:false,  //这个是编辑模态框
@@ -452,6 +483,30 @@ export default {
 
   },
   methods: {
+
+    //标签管理
+    //----新建标签----
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+
+      handleInputConfirm() {
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          this.welfareData.push(inputValue);
+        }
+        this.inputVisible = false;
+        this.inputValue = '';
+      },
+
+
+    //----关闭标签----
+    tagclose(tag) {
+      this.welfareData.splice(this.welfareData.indexOf(tag), 1);
+      },
 
     //搜索框发生改变
     searchChange(val){
@@ -561,20 +616,21 @@ export default {
 
     //编辑保存
     async toSave(formName){
-
-
     //表单验证
      this.$refs[formName].validate(async(valid) => {
           if (valid) {
-                            // 将省份id转换为省份名字保存到数据库
+                // 将省份id转换为省份名字保存到数据库
                 if(!isNaN(this.toSeeTitle.province)){
                   let provinceId = this.toSeeTitle.province;
                   let res1 = await findProvinceById({id:provinceId});
                   this.toSeeTitle.province = res1.data.name;
               
                 }
+
+                //将福利信息转换格式保存
+                this.toSeeTitle.welfare=this.welfareData;
               
-                  try {
+                try {
                     // 暂时删除时间戳，由于后端开发问题，传入时间戳会报400错误
                     this.$delete(this.toSeeTitle,'endTime');
                     this.$delete(this.toSeeTitle,'startTime');
@@ -587,10 +643,12 @@ export default {
                         } else {
                           config.errorMsg(this, "修改失败");
                         }
+                    
 
-                  } catch (error) {
-                        console.log(error);
-                        config.errorMsg(this, "修改失败");}
+
+                } catch (error) {
+                      console.log(error);
+                      config.errorMsg(this, "修改失败");}
            
           } else {
             console.log('error submit!!');
@@ -733,17 +791,27 @@ export default {
       let id = this.toSeeTitle.businessId;
       let res = await findBusinessById({id:id});
       this.businessName=res.data.name;
+
+      //传入福利tag
+      //转换福利类型，由string转为数组并添加到tag里
+      let str = this.toSeeTitle.welfare;
+      this.welfareData=str.split(",")
     },
 
 
     //查看
     async toSee(row){ 
 
+      //传入商家信息，将商家id转换为商家名称
       this.dialogVisible= true;
       this.toSeeTitle = row;
       let id = this.toSeeTitle.businessId;
       let res = await findBusinessById({id:id});
       this.businessName=res.data.name;
+
+      //传入福利tag
+      let str = this.toSeeTitle.welfare;
+      this.welfareData=str.split(",")
 
     },
 
@@ -770,8 +838,11 @@ export default {
 
    //查找全部招聘信息
     async findEmp(){
+
+      //直接调用接口查找全部信息
       try {
 
+        //过滤掉招聘结束的
         let res = await findAllEmployment();
         var reg=new RegExp("招聘中");
         var prr=[];
@@ -783,13 +854,17 @@ export default {
         this.tableData=prr;
 
 
-        //获取职位类型并去重
+        //获取职位类型并去重，加入到职位分类选项里
         let jobArr = res.data.map(item => {
           
           return item.job;
         });
         //去重
         this.jobData = [...new Set(jobArr)];
+
+
+ 
+
 
         //时间格式转换
           let timeArr = res.data.map(item =>{
@@ -802,6 +877,7 @@ export default {
         
       } catch (error) {
         config.errorMsg(this,'查找错误');
+        console.log(error);
       }
     },
 
@@ -881,9 +957,17 @@ export default {
 
 /* (模态框编辑) */
 
+{
+  
+  background-color: aquamarine;
+}
+
+.btnBox{
+  text-align: center;
+}
 
 .editbutton{
-  float: right;
+  
   margin: 10px;
 }
 

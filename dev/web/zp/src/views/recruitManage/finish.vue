@@ -3,7 +3,7 @@
  * 招聘完结页面
  * @Date: 2019-12-23 17:03:30 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2019-12-29 17:27:21
+ * @Last Modified time: 2019-12-29 20:33:07
  */
 <template>
   <div id="recruitDoing">    
@@ -136,7 +136,14 @@
           <div class="twoFlour Flour">
 
             <div class="tagBox">
-              <el-tag type="success">{{toSeeTitle.welfare}}</el-tag>
+               <div class="tagBox">
+              <el-tag style="margin-right:3px;"
+                :key="tag"
+                v-for="tag in welfareData"
+                :disable-transitions="false">
+                {{tag}}
+              </el-tag>
+            </div>
             </div>
 
           </div>
@@ -379,6 +386,7 @@ import config from '@/utils/config.js';
 export default {
   data() {
     return { 
+      welfareData:[],   
       provinceData:[],provinceCityData:[], //这里是模态框编辑数据使用的省份和城市选择数组，因为后台没有给相应接口
       formLabelWidth:"80px",
       businessName:"",
@@ -556,7 +564,7 @@ export default {
     async toSave(formName){
 
 
-  //表单验证
+   //表单验证
      this.$refs[formName].validate(async(valid) => {
           if (valid) {
                             // 将省份id转换为省份名字保存到数据库
@@ -735,6 +743,10 @@ export default {
       let id = this.toSeeTitle.businessId;
       let res = await findBusinessById({id:id});
       this.businessName=res.data.name;
+
+      //传入福利tag
+      let str = this.toSeeTitle.welfare;
+      this.welfareData=str.split(",")
 
     },
 
