@@ -3,7 +3,7 @@
  * 招聘审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-29 20:40:02
+ * @Last Modified time: 2019-12-29 20:47:44
  */
 <template>
   <div id="recruitCheck">
@@ -552,9 +552,7 @@ export default {
     
     background-color: #FF0000;
 }
-.tableCss{
-  // text-align: center;
-}
+
 .Key-s{
   float: right;
   width: 300px;
