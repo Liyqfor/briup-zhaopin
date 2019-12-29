@@ -1,3 +1,19 @@
+<!--
+ @Author:Ivan
+ @Date:2019-12-29 19:20:40
+ @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 19:20:40
+-->
+
+ @Last Modified time:2019-12-29 19:20:17
+-->
+
+ @Last Modified time:2019-12-29 19:10:27
+-->
+
+ @Last Modified time:2019-12-29 19:10:16
+-->
+
 /*
  * @Author: liuyr 
  * 招聘中页面
@@ -30,8 +46,8 @@
             </el-input>
           </div>  -->
 
-           <el-input placeholder="请输入内容" @change="searchChange"  v-model="string" class="input-with-select">
-            <el-select v-model="key" slot="prepend" style="width:120px" placeholder="请选择">
+           <el-input placeholder="请输入内容" @change="searchChange"  v-model="string" class="input-with-select" size="mini">
+            <el-select v-model="key" slot="prepend" style="width:120px" placeholder="请选择" size="mini">
               <el-option v-for="item in options"
                 :key="item.value"
                 :label="item.label"
@@ -45,7 +61,7 @@
 
       <!-- 职位选择筛选器 -->
        <div class="jobDropDownBox">
-          <el-select @change="JobSelect" clearable v-model="job" placeholder="职位类型" >
+          <el-select @change="JobSelect" clearable v-model="job" placeholder="职位类型" size="mini">
             <el-option class="oooo"
               
               v-for="item in jobData"
@@ -841,7 +857,7 @@ export default {
 }
 
 .formContainer{
-  margin-top: 20px;
+  margin-top: -10px;
   height: 455px;
 }
 
