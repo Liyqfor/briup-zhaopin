@@ -3,7 +3,7 @@
  * 招聘审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-29 17:03:24
+ * @Last Modified time: 2019-12-29 17:12:35
  */
 <template>
   <div id="recruitCheck">

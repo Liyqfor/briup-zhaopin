@@ -1,15 +1,25 @@
+<!--
+ @Author:Ivan
+ @Date:2019-12-29 17:01:23
+ @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 17:01:23
+-->
+
+ @Last Modified time:2019-12-29 16:08:08
+-->
+
 /*
  * @Author: liuyr 
  * 商家审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-29 17:04:56
+ * @Last Modified time: 2019-12-29 17:12:01
  */
 <template>
   <div id="businessCheck">
       <!-- 下拉框 -->
        <div class="selectDiv">
-          <el-select @change="industryChange" v-model="business" clearable placeholder="全部">
+          <el-select @change="industryChange" v-model="business" clearable placeholder="全部" size="mini">
             <el-option
               v-for="item in industryData"
               :key="item"

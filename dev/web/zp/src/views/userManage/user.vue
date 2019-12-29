@@ -1,3 +1,37 @@
+<!--
+ @Author:Ivan
+ @Date:2019-12-29 17:05:28
+ @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 17:05:28
+-->
+
+ @Last Modified time:2019-12-29 17:05:14
+-->
+
+ @Last Modified time:2019-12-29 17:04:55
+-->
+
+ @Last Modified time:2019-12-29 17:04:51
+-->
+
+ @Last Modified time:2019-12-29 16:43:48
+-->
+
+ @Last Modified time:2019-12-29 16:43:36
+-->
+
+ @Last Modified time:2019-12-29 16:42:50
+-->
+
+ @Last Modified time:2019-12-29 16:41:58
+-->
+
+ @Last Modified time:2019-12-29 16:06:49
+-->
+
+ @Last Modified time:2019-12-29 16:06:18
+-->
+
 /*
  * @Author: liuyr 
  * 用户列表页面
@@ -8,19 +42,19 @@
 <template>
 
   <div id="userList">
-    <div class="btnDiv">
+    <div style="float: right; margin-right: 230px;"><div class="btnDiv">
       <el-button type="primary" @click="toAdd()"  icon="el-icon-info" style="background:#ee7942" size="mini">添加用户</el-button>
       <el-button type="primary" @click="toImport()"  icon="el-icon-info" style="background:#4876ff" size="mini">导入用户</el-button>
-    </div>
+    </div></div>
     <div class="searchDiv">
       <div class="selectbox1">
-        <el-select @change="educationChange" v-model="education" placeholder="学历" style="width:200px" clearable>
+        <el-select @change="educationChange" v-model="education" placeholder="学历" style="width:200px" clearable size="mini">
           <el-option v-for="item in educationData" 
             :key="item" 
             :label="item" 
             :value="item"></el-option>
         </el-select>
-        <el-select @change="genderChange" v-model="gender" placeholder="性别" style="width:100px" clearable>
+        <el-select @change="genderChange" v-model="gender" placeholder="性别" style="width:100px" clearable size="mini">
           <el-option v-for="item in genderData" 
             :key="item" 
             :label="item" 
@@ -29,11 +63,11 @@
       </div>
       <div class="selectbox2">
         <el-input clearable @change="inputChange" placeholder="请输入内容" v-model="searchKeyword" size="mini">
-            <el-select style="width:100px" v-model="searchType" slot="prepend" placeholder="请选择" clearable>
+            <el-select style="width:100px" v-model="searchType" slot="prepend" placeholder="请选择" clearable size="mini">
               <el-option label="用户名" value="1"></el-option>
               <el-option label="手机号" value="2"></el-option>
             </el-select>
-            <el-button @click="searchForUser(searchKeyword)" slot="append" icon="el-icon-search"></el-button>
+            <el-button @click="searchForUser(searchKeyword)" slot="append" icon="el-icon-search" size="mini"></el-button>
           </el-input>
 
       </div>
@@ -63,7 +97,7 @@
       </el-table>  
     </div>
     <div class="bu_b">
-      <el-button @click="toBatchDelete" type="danger" size="mini" plain>批量删除</el-button>
+      <el-button @click="toBatchDelete" type="danger" plain size="mini">批量删除</el-button>
     </div>
     <div class="pagi">
       <el-pagination
@@ -77,7 +111,6 @@
     <!-- 修改模态框 -->
     <el-dialog title="修改用户信息" :visible.sync="editVisible" width="60%" :before-close="beforeClose">
       <el-form :model="currentUser" :rules="rules" ref="ruleForm">
-        {{currentUser}}
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item prop="username" label="用户名" :label-width="formLabelWidth">
@@ -129,8 +162,8 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="toCancel('ruleForm')">取 消</el-button>
-        <el-button size="mini" type="primary" @click="toSave('ruleForm')">确 定</el-button>
+        <el-button @click="toCancel('ruleForm')">取 消</el-button>
+        <el-button type="primary" @click="toSave('ruleForm')">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog title="添加用户" :visible.sync="addVisible">
@@ -150,11 +183,10 @@
     <el-dialog
       title="导入说明"
       :visible.sync="importVisible"
-      width="50%"
-      :before-close="handleClose">
+      width="50%">
       <el-row>
         <el-col :span="19"><span>使用导入功能时，请按照模板表格规定的字段去填写对应信息，</span></el-col>
-        <el-col :span="5"><el-button size="mini" style="background:#4876ff; color:#fff">下载模板</el-button></el-col>
+        <el-col :span="5"><el-button style="background:#4876ff; color:#fff">下载模板</el-button></el-col>
       </el-row>
       <span>您可以点击按钮下载模板表格，填写完后在下提交 ：</span>
       <br>
@@ -162,7 +194,7 @@
       <br>
       <div class="box">点击选择文件或将表格拖动到框内</div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="importVisible = false" style="background:green; color:#000" size="mini">开始导入</el-button>
+        <el-button type="primary" @click="importVisible = false" style="background:green; color:#000">开始导入</el-button>
       </div>
     </el-dialog>
 
@@ -289,7 +321,7 @@ export default {
             if (res.status === 200) {
               this.findAllJob();
               this.editVisible = false;
-             
+             this.addVisible = false;
               config.successMsg(this, "修改成功");
             } else {
               config.errorMsg(this, "修改失败");
@@ -476,14 +508,7 @@ export default {
       }catch(error){
         config.errorMsg(this, "查找错误");
       }
-    },
-    handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
-      }
+    }
   },
   created() {
     this.findAllJob();
@@ -503,19 +528,16 @@ export default {
 }
 .bu_b{
   float: left;
-  margin-top: 10px;
+  margin-top: 20px;
   width: 60px;
 }
 .pagi{
     float: right;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 .btnDiv{
-
-  width: 1300px;
+  width: 350px;
   margin-top: -50px;
-  margin-bottom: 20px;
-  text-align: right;
   position: fixed;
 }
 .dialog-footer{
