@@ -3,7 +3,7 @@
  * 招聘中页面
  * @Date: 2019-12-23 17:03:30 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2019-12-28 14:41:14
+ * @Last Modified time: 2019-12-29 15:22:35
  */
 <template>
   <div id="recruitDoing">    
@@ -17,7 +17,7 @@
         <div class="SearchBox"> 
                  
           <div style="margin-top: 0px;">    
-            <el-select @change="searchKey" v-model="value" style="width:110px;" placeholder="关键字">
+            <el-select v-model="key" style="width:110px;" placeholder="关键字">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -25,8 +25,8 @@
                 :value="item.value">
               </el-option>
             </el-select>           
-            <el-input placeholder="请输入关键字" style="width:200px;" class="input-with-select">             
-              <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-input @change="searchChange" placeholder="请输入关键字" v-model="string" style="width:200px;" class="input-with-select">             
+              <el-button @click="keySearch" slot="append" icon="el-icon-search"></el-button>
             </el-input>
           </div>
         </div>
@@ -88,7 +88,7 @@
     <div class="PaginationBox">
 
       <!-- 批量删除按钮 -->
-       <el-button type="danger" icon="el-icon-delete" @click="toBatchDelete"  circle></el-button>
+       <el-button type="danger" @click="toBatchDelete" >批量删除</el-button>
 
 
       <!-- 分页器 -->
@@ -105,7 +105,7 @@
       <el-dialog class="toSeeBox"
         :title="toSeeTitle.title"
         :visible.sync="dialogVisible"
-        width="30%"
+        width="35%"
         :before-close="handleClose">
 
         <!-- 最外层容器 -->
@@ -117,7 +117,7 @@
             <!-- 左边的招聘人数和地址 -->
             <div class="oneFlourLeft">
               <div class="zhaoren1"><i class="el-icon-document"> 需求人数：{{toSeeTitle.num}}</i> </div>
-              <div class="position"><i class="el-icon-location"> {{toSeeTitle.province}} - {{toSeeTitle.city}} </i></div>
+              <div class="position"><i class="el-icon-location"> {{toSeeTitle.province}}-{{toSeeTitle.city}}-{{businessName}} </i></div>
             </div>
 
             <!-- 右边的工资 -->
@@ -180,18 +180,18 @@
       </el-dialog>
 
       <!-- 编辑模态框 -->
-      <el-dialog title="编辑" :visible.sync="editVisible" :before-close="beforeClose">
+      <el-dialog title="编辑" class="editBox" :visible.sync="editVisible" :before-close="beforeClose">
         <el-form :model="toSeeTitle" ref="ruleForm" :rules="rules">
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="ID号" prop="title" :label-width="formLabelWidth">
+            <el-form-item label="ID号" prop="id" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.id"></el-input>
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
-            <el-form-item label="职业ID" prop="job" :label-width="formLabelWidth">
+            <el-form-item label="职业ID" prop="jobid" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.job_id"></el-input>
             </el-form-item>
           </el-col>
@@ -206,20 +206,39 @@
           
           <el-col :span="12">
             <el-form-item label="职业类型" prop="job" :label-width="formLabelWidth">
-              <el-input v-model="toSeeTitle.job"></el-input>
+                        <el-select @change="JobSelect" clearable v-model="toSeeTitle.job" placeholder="职位类型" >
+            <el-option class="oooo"
+              
+              v-for="item in jobData"
+              :key="item.id"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="商家ID" prop="contactName" :label-width="formLabelWidth">
-              <el-input v-model="toSeeTitle.businessId"></el-input>
+            <el-form-item label="企业名称" prop="businessId" :label-width="formLabelWidth">
+              <!-- <el-input v-model="businessName"></el-input> -->
+                <el-select
+                      @change="dialogProChange"
+                      v-model="toSeeTitle.businessId"
+                      placeholder="请选择企业">
+                      <el-option
+                        v-for="item in AllBusiness"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                </el-select>              
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
-            <el-form-item label="需要人数" prop="contactPhone" :label-width="formLabelWidth">
+            <el-form-item label="需要人数" prop="num" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.num"></el-input>
             </el-form-item>
           </el-col>
@@ -228,13 +247,34 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="所在省份" prop="province" :label-width="formLabelWidth">
-              <el-input v-model="toSeeTitle.province"></el-input>
+              <!-- <el-input v-model="toSeeTitle.province"></el-input> -->
+                <el-select
+                      @change="dialogProChange"
+                      v-model="toSeeTitle.province"
+                      placeholder="请选择省份">
+                      <el-option
+                        v-for="item in provinceData"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                </el-select>
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
             <el-form-item label="所在城市" prop="city" :label-width="formLabelWidth">
-              <el-input v-model="toSeeTitle.city"></el-input>
+              <!-- <el-input v-model="toSeeTitle.city"></el-input> -->
+                <el-select
+                      v-model="toSeeTitle.city"
+                      placeholder="请选择城市">
+                      <el-option
+                        v-for="item in provinceCityData"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.name">
+                      </el-option>
+                </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -242,13 +282,13 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="福利" prop="contactName" :label-width="formLabelWidth">
+            <el-form-item label="福利" prop="welfare" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.welfare"></el-input>
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
-            <el-form-item label="工作时间" prop="contactPhone" :label-width="formLabelWidth">
+            <el-form-item label="每日工时" prop="workingHours" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.workingHours"></el-input>
             </el-form-item>
           </el-col>
@@ -270,17 +310,30 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="状态" prop="contactName" :label-width="formLabelWidth">
+            <el-form-item label="状态" prop="status" :label-width="formLabelWidth">
               <el-input v-model="toSeeTitle.status"></el-input>
             </el-form-item>
           </el-col>
           
           <el-col :span="12">
-            <el-form-item label="审核" prop="contactPhone" :label-width="formLabelWidth">
-              <el-input v-model="toSeeTitle.audit_status"></el-input>
+            <el-form-item label="审核" prop="auditStatus" :label-width="formLabelWidth">
+              <el-input v-model="toSeeTitle.auditStatus"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="月薪" prop="salary" :label-width="formLabelWidth">
+              <el-input v-model="toSeeTitle.salary"></el-input>
+            </el-form-item>
+          </el-col>
+          
+          <el-col :span="12">
+            <div></div>
+          </el-col>
+        </el-row>
+
 
 
         <el-row>
@@ -291,10 +344,15 @@
           </el-col>
         </el-row>
 
-        <div>
-            <el-button @click="toCancel('ruleForm')">取 消</el-button>
-            <el-button type="primary" @click="toSave('ruleForm')">确 定</el-button>
-        </div>
+        <el-row>
+          <el-col :span="24">
+
+            <el-button class="editbutton" @click="toCancel('ruleForm')">取 消</el-button>
+            <el-button class="editbutton" type="primary" @click="toSave('ruleForm')">保 存</el-button>
+            
+          </el-col>
+        </el-row>
+
 
         </el-form>
 
@@ -306,8 +364,11 @@
 </template>
 
 <script>
-import { findAllCity, findCityByProvinceId } from "@/api/city.js";
-import {findAllEmployment,findEmploymentByJob,deleteEmploymentById,saveOrUpdateEmployment} from '@/api/employment-controller.js';
+import {findCityByProvinceId } from "@/api/city.js";
+import {findAllEmployment,findEmploymentByJob,deleteEmploymentById,saveOrUpdateEmployment,
+        findEmploymentByTitle} from '@/api/employment-controller.js';
+import {findAllProvince,findProvinceById} from '@/api/province.js';
+import {findBusinessById,findAllBusiness} from '@/api/business.js';
 import config from '@/utils/config.js';
 
 export default {
@@ -315,7 +376,9 @@ export default {
     return { 
       provinceData:[],provinceCityData:[], //这里是模态框编辑数据使用的省份和城市选择数组，因为后台没有给相应接口
       formLabelWidth:"80px",
-      search:"",
+      businessName:"",
+      AllBusiness:"",
+      string:"",
       matchData:"",
       editVisible:false,  //这个是编辑模态框
       dialogVisible:false,//这个是查看模态框
@@ -329,19 +392,19 @@ export default {
       job:"",
       jobData:[],
       options: [{
-          value: '选项1',
+          value: '招聘标题',
           label: '招聘标题'
         }, {
-          value: '选项2',
+          value: '发布人',
           label: '发布人'
         }, {
-          value: '选项3',
-          label: '联系方式'
+          value: '福利',
+          label: '福利'
         }, {
-          value: '选项4',
+          value: '职位',
           label: '职位'
         },],
-      value: '',
+      key: '',
       rules: {
           title: [
             { required: true, message: '请输入标题', trigger: 'blur' },
@@ -359,7 +422,10 @@ export default {
           description: [
             { required: true, message: '请输入内容', trigger: 'blur'  }
           ],
-          
+          province: [
+          { required: true, message: "请选择省份", trigger: "change" }
+          ],
+          city: [{ required: true, message: "请选择城市", trigger: "change" }]
         },
     };
   },
@@ -371,8 +437,106 @@ export default {
     //   temp.slice(0,pageSize);
     //   return temp.slice((page-1)*pageSize,pageSize*page);
     // }
+
+ 
+
   },
   methods: {
+
+    //搜索框发生改变
+    searchChange(val){
+      console.log(val);
+    },
+
+    //关键字搜索
+    async keySearch(){
+      //先过滤未通过的
+      let data = await findAllEmployment();
+      var reg=new RegExp("招聘中");
+      var drr=[];
+      let enen = data.data.map(item=>{
+          if(reg.test(item.status))
+          drr.push(item);
+      })
+
+        //时间格式转换
+          let timeArr = data.data.map(item =>{
+          let tm=item.publishTime;
+          item.publishTime=tm.slice(0,10);
+          return item.publishTime;
+        })
+      
+      drr.publishTime
+      
+      
+      let string = this.string;
+      //招聘标题
+      if(this.key=="招聘标题")
+      {
+        let res = drr;
+        var reg=new RegExp(string);
+        var prr=[];
+        let enen = res.map(item=>{
+          if(reg.test(item.title))
+          prr.push(item);
+        })
+      }
+
+      else if(this.key=="发布人")
+      {
+        let res = drr;
+        var reg=new RegExp(string);
+        var prr=[];
+        let enen = res.map(item=>{
+          if(reg.test(item.contactName))
+          prr.push(item);
+        })
+      }
+
+      else if(this.key=="福利")
+      {
+        let res = drr;
+        var reg=new RegExp(string);
+        var prr=[];
+        let enen = res.map(item=>{
+          if(reg.test(item.welfare))
+          prr.push(item);
+        })
+      }
+
+      else if(this.key=="职位")
+      {
+        let res = drr;
+        var reg=new RegExp(string);
+        var prr=[];
+        let enen = res.map(item=>{
+          if(reg.test(item.job))
+          prr.push(item);
+        })
+      }
+      else{
+        this.currentPage=1;
+        this.findEmp();
+      }
+
+
+
+      this.currentPage=1;
+      this.tableData=prr;
+
+    },
+
+
+    //编辑模态框发生改变
+    async dialogProChange(val){
+      
+      this.toSeeTitle.city="";
+      try {
+        let res = await findCityByProvinceId({provinceId:val});
+        this.provinceCityData = res.data;
+      
+      } catch (error) {}
+    },
 
     //关闭模态框:打叉
     beforeClose(){
@@ -389,32 +553,46 @@ export default {
 
     //编辑保存
     async toSave(formName){
-      try {
-        
-        this.$delete(this.toSeeTitle,'endTime');
-        this.$delete(this.toSeeTitle,'startTime');
-        this.$delete(this.toSeeTitle,'publishTime');
-        console.log(this.toSeeTitle);
-        let res = await saveOrUpdateEmployment(this.toSeeTitle);
 
-        if (res.status === 200) {
-              this.findEmp();
-              this.editVisible = false;
-              config.successMsg(this, "修改成功");
-            } else {
-              config.errorMsg(this, "修改失败");
-            }
 
-      } catch (error) {
-            console.log(error);
-            config.errorMsg(this, "修改失败");       
-      }
+  //表单验证
+     this.$refs[formName].validate(async(valid) => {
+          if (valid) {
+                            // 将省份id转换为省份名字保存到数据库
+                if(!isNaN(this.toSeeTitle.province)){
+                  let provinceId = this.toSeeTitle.province;
+                  let res1 = await findProvinceById({id:provinceId});
+                  this.toSeeTitle.province = res1.data.name;
+              
+                }
+              
+                  try {
+                    // 暂时删除时间戳，由于后端开发问题，传入时间戳会报400错误
+                    this.$delete(this.toSeeTitle,'endTime');
+                    this.$delete(this.toSeeTitle,'startTime');
+                    this.$delete(this.toSeeTitle,'publishTime');
+                    let res = await saveOrUpdateEmployment(this.toSeeTitle);
+                    if (res.status === 200) {
+                          this.findEmp();
+                          this.editVisible = false;
+                          config.successMsg(this, "修改成功");
+                        } else {
+                          config.errorMsg(this, "修改失败");
+                        }
+
+                  } catch (error) {
+                        console.log(error);
+                        config.errorMsg(this, "修改失败");}
+           
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+
+
     },
 
-    //搜索栏
-    searchKey(val){
-      this.search=val;
-    },
 
     //批量删除
      toBatchDelete() {
@@ -458,7 +636,7 @@ export default {
       }
     },
 
-    //复选框切换
+    //复选框切换(批量删除复选框)
     handleSelectionChange(val){
       console.log(val);
       let ids = val.map(item => {
@@ -520,11 +698,11 @@ export default {
 
     },
 
-    //待编辑
+    //职位类型选择器
     async JobSelect(val){
       if(val){
           try {
-          let res = await findEmploymentByJob({job:val})
+          let res = await findEmploymentByJob({job:val});
           
           this.tableData=res.data;
         } catch (error) {}
@@ -539,26 +717,63 @@ export default {
     },
 
      //编辑
-    toEdit(row){
+    async toEdit(row){
       this.toSeeTitle={...row};
       this.editVisible=true;
+
+      //传入商家信息
+      let id = this.toSeeTitle.businessId;
+      let res = await findBusinessById({id:id});
+      this.businessName=res.data.name;
     },
 
 
     //查看
-    toSee(row){ 
+    async toSee(row){ 
+
       this.dialogVisible= true;
       this.toSeeTitle = row;
+      let id = this.toSeeTitle.businessId;
+      let res = await findBusinessById({id:id});
+      this.businessName=res.data.name;
+
     },
 
+    //查找全部商家信息
+    async findAllBus(){
+      try {
+        let res = await findAllBusiness();
 
-   //查找全部
+        this.AllBusiness = res.data;
+      } catch (error) {
+        
+      }
+    },
+
+    // 查找全部省份
+    async findProvince(){
+      try {
+        let res = await findAllProvince();
+        this.provinceData=res.data;
+      } catch (error) {
+        
+      }
+    },
+
+   //查找全部招聘信息
     async findEmp(){
       try {
 
         let res = await findAllEmployment();
-        this.tableData = res.data;
+        var reg=new RegExp("招聘中");
+        var prr=[];
+        let enen = res.data.map(item=>{
+          if(reg.test(item.status))
+          prr.push(item);
+        })
         
+        this.tableData=prr;
+
 
         //获取职位类型并去重
         let jobArr = res.data.map(item => {
@@ -569,14 +784,12 @@ export default {
         this.jobData = [...new Set(jobArr)];
 
         //时间格式转换
-        let timeArr = res.data.map(item =>{
+          let timeArr = res.data.map(item =>{
           let tm=item.publishTime;
-          var dataee=new Date(tm).toJSON();
-          var realdate = new Date(+new Date(dataee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
-          return realdate;
+          item.publishTime=tm.slice(0,10);
+          return item.publishTime;
         })
-        
-        this.tableData.publishTime=[...new Set(timeArr)];
+
         
         
       } catch (error) {
@@ -587,6 +800,8 @@ export default {
   },
   created() {
     this.findEmp();
+    this.findProvince();
+    this.findAllBus();
   },
   mounted() {}
 };
@@ -594,7 +809,7 @@ export default {
 
 
 <style scoped>
-/* 通用样式 */
+/*---------------------------------------------------------通用样式------------------------------------------------------------------*/
 #recruitDoing{
   height: 100%;  
 }
@@ -619,7 +834,7 @@ export default {
 
 .formContainer{
   margin-top: 20px;
-  height: 470px;
+  height: 455px;
 }
 
 .PageChange{
@@ -627,7 +842,7 @@ export default {
 }
 
 
-/* （模态框查看内容） */
+/* （模态框查看） */
 .Flour{
   margin-bottom: 10px;
 }
@@ -639,7 +854,7 @@ export default {
 }
 
 .oneFlourLeft{
-  width:50%;
+  width:60%;
   float:left;
 
 }
@@ -651,20 +866,25 @@ export default {
 .oneFlourRight{
   text-align: center;
   color: coral;
-  width:50%;
+  width:40%;
   float:right;
  
 }
 
+/* (模态框编辑) */
+
+
+.editbutton{
+  float: right;
+  margin: 10px;
+}
 
 
 
-
-
-/* 平板样式 */
+/*------------------------------------------------------------平板样式 ---------------------------------------------------------------*/
 
 
 
-/* 手机样式 */
+/*-----------------------------------------------------------手机样式--------------------------------------------------------------- */
 
 </style>
