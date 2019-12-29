@@ -1,3 +1,10 @@
+<!--
+ @Author:Ivan
+ @Date:2019-12-29 16:07:48
+ @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 16:07:48
+-->
+
 /*
  * @Author: liuyr 
  * 招聘审核页面
@@ -512,7 +519,7 @@ export default {
 }
 .footerDiv {
   overflow: hidden;
-  margin-top: 10px;
+  margin-top: 20px;
   .btnDiv {
     float: left;
   }

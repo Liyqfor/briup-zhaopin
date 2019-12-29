@@ -1,3 +1,13 @@
+<!--
+ @Author:Ivan
+ @Date:2019-12-29 16:06:49
+ @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 16:06:49
+-->
+
+ @Last Modified time:2019-12-29 16:06:18
+-->
+
 /*
  * @Author: liuyr 
  * 用户列表页面
@@ -503,12 +513,12 @@ export default {
 }
 .bu_b{
   float: left;
-  margin-top: 10px;
+  margin-top: 20px;
   width: 60px;
 }
 .pagi{
     float: right;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 .btnDiv{
 

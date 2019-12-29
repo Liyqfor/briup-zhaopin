@@ -1,7 +1,13 @@
 <!--
  @Author:Ivan
- @Date:2019-12-28 15:22:56
+ @Date:2019-12-29 15:43:40
  @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 15:43:40
+-->
+
+ @Last Modified time:2019-12-29 15:42:32
+-->
+
  @Last Modified time:2019-12-28 15:22:56
 -->
 
@@ -264,7 +270,7 @@ export default {
 }
 .delandpage{
     overflow: hidden;
-    margin-top: 10px;
+    margin-top: 20px;
     .btndiv{
       float: left;
     }

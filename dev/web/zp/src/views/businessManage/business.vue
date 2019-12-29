@@ -1,3 +1,10 @@
+<!--
+ @Author:Ivan
+ @Date:2019-12-29 16:05:24
+ @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 16:05:24
+-->
+
 /*
  * @Author: liuyr 
  * 商家列表页面
@@ -615,7 +622,7 @@ export default {
 }
 .footerDiv {
   overflow: hidden;
-  margin-top: 10px;
+  margin-top: 20px;
   .btnDiv {
     float: left;
   }

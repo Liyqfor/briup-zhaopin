@@ -1,3 +1,10 @@
+<!--
+ @Author:Ivan
+ @Date:2019-12-29 16:08:08
+ @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 16:08:08
+-->
+
 /*
  * @Author: liuyr 
  * 商家审核页面
@@ -378,7 +385,7 @@ export default {
 }
 .footerDiv {
   overflow: hidden;
-  margin-top: 10px;
+  margin-top: 20px;
   .btnDiv {
     float: left;
   }
