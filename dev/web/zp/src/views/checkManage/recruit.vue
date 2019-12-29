@@ -3,13 +3,13 @@
  * 招聘审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-29 14:46:02
+ * @Last Modified time: 2019-12-29 16:59:03
  */
 <template>
   <div id="recruitCheck">
      <!-- 下拉框 -->
       <!-- {{jobData}} -->
-       <div class="selectDiv">
+       <div class="selectDiv" >
           <el-select @change="jobTyleData" v-model="recruit" clearable placeholder="职位类型">
             <el-option
               v-for="item in jobData"
@@ -21,7 +21,7 @@
           </el-select>
       </div>
       <div class="Key-s">
-          <div style="margin-top: 15px;">
+          <div style="">
             <el-input @change="inputChange" placeholder="请输入内容" v-model="searchKeyword" class="input-with-select">
               <el-select  v-model="searchType" slot="prepend" placeholder="关键字">
                    <el-option label="招聘标题" value="1"></el-option>
@@ -34,6 +34,7 @@
       </div>
       <!-- 表格 -->
       <el-table
+      class="tableCss"
     ref="multipleTable"
     :data="recruitDatareList"
     tooltip-effect="dark"
@@ -41,18 +42,18 @@
     @selection-change="selectionChange">
     <el-table-column
       type="selection"
-      width="55">
+      >
     </el-table-column>
     <el-table-column
       prop="title"
       label="招聘标题"
-      width="120">
+      >
       <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
     </el-table-column>
     <el-table-column
       prop="contactName"
       label="发布人"
-      width="120">
+      >
     </el-table-column>
     <el-table-column
       prop="contactPhone"
@@ -82,15 +83,15 @@
       label="状态"
       >
        <template  slot-scope="scope">
-              <div v-if="scope.row.status==='待审核'">
+              <div v-if="scope.row.auditStatus==='待审核'">
                     <el-button  class="tonguo" type="text" @click="toEdit(scope.row)" size="small" >通过</el-button>
                     <el-button class="jujue" type="text" size="small" @click="toDelete(scope.row)">拒绝</el-button>
               </div>
-              <div v-if="scope.row.status==='审核通过'">
-                    <span>审核通过</span>
+              <div v-if="scope.row.auditStatus==='审核通过'">
+                    <span class="tg_span">审核通过</span>
               </div>
-               <div v-if="scope.row.status==='审核未通过'">
-                    <span>已拒绝</span>
+               <div v-if="scope.row.auditStatus==='审核未通过'">
+                    <span  class="jj_span">已拒绝</span>
               </div>
              
             </template>
@@ -115,7 +116,7 @@
     title="请填写拒绝理由"
      
     :visible.sync="dialogVisible"
-    width="30%"
+     width="30%"
     >
       <!-- <el-input
         type="textarea"
@@ -127,6 +128,7 @@
       <el-form :inline="true"  class="demo-form-inline">
           <el-form-item label="拒绝理由:">
         <el-input type="textarea"
+        
         style="width:425px"
         :rows="5"
         :col="3" ></el-input>
@@ -245,12 +247,13 @@ export default {
       pageSize:config.pageSize,
       currentPage:1,
       ids:[],
-      status:[],
+      auditStatus:[],
       searchType:'',
       employmentTitleData:[],
       dialogVisible:false,
       seeVisible:false,
       list:{},
+      textarea:'',
 
       
     };
@@ -268,7 +271,7 @@ export default {
   methods: {
     
    toSee(row){
-        this.recruitData = { ...row };
+        this.list = { ...row };
         // console.log(this.recruit);
         this.seeVisible = true;
       },
@@ -282,6 +285,13 @@ export default {
         // this.list=[...this.recruitData];
 
       },
+      // dialogtoqux(){
+      //     this.textarea="";
+      //     //  console.log(this.inp);
+      //      dialogVisible=false;
+
+      //   },
+     
        async dialogtoqd(){
         
         // console.log(this.list);
@@ -291,7 +301,7 @@ export default {
                   delete this.list.startTime;
                   delete this.list.endTime;
               // this.currentBus.status=jj;
-              this.list.status="审核未通过";
+              this.list.auditStatus="审核未通过";
                
                let res=await saveOrUpdateEmployment(this.list);
                    
@@ -330,6 +340,9 @@ export default {
             this.recruitData = res.data;
            
             this.currentPage = 1;
+            this.recruitData.forEach(item=>{
+             item.publishTime=item.publishTime.slice(0,10);})
+             console.log(recruitData);
           } catch (error) {
             config.errorMsg(this,'请输入与'+searchType+'相关的关键字');
           }
@@ -345,6 +358,8 @@ export default {
             let res = await findEmploymentByTitle({title:this.searchKeyword});
             this.recruitData = res.data;
             this.currentPage = 1;
+            this.recruitData.forEach(item=>{
+             item.publishTime=item.publishTime.slice(0,10);})
           } catch (error) {
             config.errorMsg(this,'请输入与'+searchType+'相关的关键字');
           }
@@ -370,7 +385,7 @@ export default {
                  
                   let res = await findEmploymentById({id:id});
                   console.log(res.data) ;
-                  res.data.status="审核通过";
+                  res.data.auditStatus="审核通过";
                   this.recruitData=res.data;
                     delete this.recruitData.publishTime;
                     delete this.recruitData.startTime;
@@ -382,7 +397,7 @@ export default {
                     config.successMsg(this,"保存错误！");
                   }
                   console.log(res.data.status);
-                  result.push(res.status);
+                  result.push(res.auditStatus);
                 } catch (error) {
                   result.push(200);
                 }
@@ -458,7 +473,7 @@ export default {
                 delete this.recruitData.publishTime;
                 delete this.recruitData.startTime; 
                 delete this.recruitData.endTime; 
-        this.recruitData.status="审核通过"; 
+        this.recruitData.auditStatus="审核通过"; 
          try {
                  
                let res=await saveOrUpdateEmployment(this.recruitData);
@@ -500,19 +515,23 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.tableCss{
+  // text-align: center;
+}
 .Key-s{
   float: right;
-  width: 300px;
+  width: 350px;
   .el-select{
-    width: 100px;
+    width: 120px;
   }
 }
 .selectDiv{
+  margin-bottom:10px;
   float: left;
 }
 .footerDiv {
   overflow: hidden;
-  margin-top: 10px;
+  margin-top: 20px;
   .btnDiv {
     float: left;
   }
@@ -550,6 +569,12 @@ export default {
 }
 .footer_jj{
   text-align: center;
+}
+.tg_span{
+  color: #008000;
+}
+.jj_span{
+  color:#FF0000;
 }
 
 </style>

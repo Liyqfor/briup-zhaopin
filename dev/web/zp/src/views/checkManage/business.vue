@@ -3,7 +3,7 @@
  * 商家审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-29 11:25:53
+ * @Last Modified time: 2019-12-29 16:56:17
  */
 <template>
   <div id="businessCheck">
@@ -80,10 +80,10 @@
                     <el-button class="jujue" type="text" size="small" @click="toDelete(scope.row)">拒绝</el-button>
               </div>
               <div v-if="scope.row.status==='审核通过'">
-                    <span>审核通过</span>
+                    <span class="tg_span">审核通过</span>
               </div>
                <div v-if="scope.row.status==='审核未通过'">
-                    <span>已拒绝</span>
+                    <span class="jj_span">已拒绝</span>
               </div>
              
             </template>
@@ -150,6 +150,7 @@
       <el-form :inline="true" :model="currentBus" class="demo-form-inline">
           <el-form-item label="审批人">
         <el-input type="textarea"
+        v-model="textarea"
         style="width:425px"
         :rows="5"
         :col="3" ></el-input>
@@ -378,7 +379,7 @@ export default {
 }
 .footerDiv {
   overflow: hidden;
-  margin-top: 10px;
+  margin-top: 20px;
   .btnDiv {
     float: left;
   }
@@ -414,5 +415,11 @@ export default {
 }
 .footer_jj{
   text-align: center;
+}
+.tg_span{
+  color: #008000;
+}
+.jj_span{
+  color:#FF0000;
 }
 </style>
