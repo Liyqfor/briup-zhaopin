@@ -3,12 +3,13 @@
  * 招聘审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-29 19:35:15
+ * @Last Modified time: 2019-12-29 20:12:25
  */
 <template>
   <div id="recruitCheck">
      <!-- 下拉框 -->
       <!-- {{jobData}} -->
+        <!-- {{recruit}} -->
        <div class="selectDiv" >
           <el-select @change="jobTyleData" size="mini" v-model="recruit" clearable placeholder="职位类型">
             <el-option
@@ -23,7 +24,7 @@
       <div class="Key-s">
           <div style="">
             <el-input @change="inputChange" size="mini" placeholder="请输入内容" v-model="searchKeyword" class="input-with-select">
-              <el-select  v-model="searchType" slot="prepend" placeholder="关键字">
+              <el-select   @change="optionChange" v-model="searchType" slot="prepend" placeholder="关键字">
                    <el-option label="招聘标题" value="1"></el-option>
                    <el-option label="职位名称" value="2"></el-option>
                
@@ -186,19 +187,19 @@
           </div>
 
           <!-- 第四行 -->
-          <div class="fourFlour Flour">
+          <div class="fourFlour Flour" style="margin-top:10px">
             <el-row>
               <el-col :span="24"> <b>职位：{{list.job}}</b> </el-col>
             </el-row>
           </div>
 
           <!-- 第五行 -->
-          <div class="fiveFlour Flour">
+          <div class="fiveFlour Flour" style="margin-top:10px">
             <b>职位介绍</b>
           </div>
 
           <!-- 第六行 -->
-          <div class="sixFlour Flour">
+          <div class="sixFlour Flour" style="margin-top:5px">
             <div class="workingHours">
               每天工作{{list.workingHours}}小时
             </div>
@@ -255,6 +256,7 @@ export default {
       list:{},
       textarea:'',
 
+
       
     };
   },
@@ -269,7 +271,14 @@ export default {
   
   },
   methods: {
-    inputChange(){
+      optionChange(){
+        this.recruit="";
+        this.findAllEmp();
+        this.currentPage=1;
+      },
+      inputChange(){
+      
+      this.recruit="";
       this.findAllEmp();
     },
   //通过招聘标题发生改变
@@ -353,7 +362,9 @@ export default {
                   
                    this.dialogVisible=false;                
                    config.successMsg(this,"拒绝成功");
+                   this.recruit="";
                    this.findAllEmp();
+                  
               }else{
                 config.successMsg(this,"拒绝失败");
 
@@ -385,7 +396,7 @@ export default {
                 try {
                  
                   let res = await findEmploymentById({id:id});
-                  console.log(res.data) ;
+                  // console.log(res.data) ;
                   res.data.auditStatus="审核通过";
                   this.recruitData=res.data;
                     delete this.recruitData.publishTime;
@@ -397,7 +408,7 @@ export default {
                       } catch (error) {
                         config.successMsg(this,"保存错误！");
                       }
-                  console.log(res.data.status);
+                  // console.log(res.data.status);
                   result.push(res.auditStatus);
                 } catch (error) {
                   result.push(200);
@@ -411,8 +422,11 @@ export default {
                 });
                 if (resu) {
                   config.successMsg(this, "批量通过成功");
+                        this.recruit="";
+                        
                 } else {
                   config.successMsg(this, "批量通过成功");
+                  this.recruit="";
                 }
                 this.findAllEmp();
               }, 500);
@@ -488,10 +502,11 @@ export default {
               {    
                   
           
-                   config.successMsg(this,"修改成功");
+                   config.successMsg(this,"通过成功");
+                   this.recruit="";
                   //  this.findAllEmp();
               }else{
-                config.successMsg(this,"修改失败");
+                config.successMsg(this,"通过失败");
 
               }
               
