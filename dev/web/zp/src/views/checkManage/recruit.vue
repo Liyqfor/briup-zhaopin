@@ -3,7 +3,7 @@
  * 招聘审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-29 20:12:25
+ * @Last Modified time: 2019-12-29 20:40:02
  */
 <template>
   <div id="recruitCheck">
@@ -173,7 +173,10 @@
           <div class="twoFlour Flour">
 
             <div class="tagBox">
-              <el-tag type="success">{{list.welfare}}</el-tag>
+              <el-tag 
+              :key="tag"
+              v-for="tag in welfareData"
+              type="success">{{tag}}</el-tag>
             </div>
 
           </div>
@@ -255,6 +258,7 @@ export default {
       seeVisible:false,
       list:{},
       textarea:'',
+      welfareData:[],
 
 
       
@@ -326,6 +330,8 @@ export default {
         this.list = { ...row };
         // console.log(this.recruit);
         this.seeVisible = true;
+        let str=this.list.welfare;
+        this.welfareData=str.split(",");
       },
 
        toDelete(row){
