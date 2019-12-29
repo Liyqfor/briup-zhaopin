@@ -3,7 +3,7 @@
  * 招聘审核页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: liyq
- * @Last Modified time: 2019-12-28 22:48:04
+ * @Last Modified time: 2019-12-29 14:46:02
  */
 <template>
   <div id="recruitCheck">
@@ -113,7 +113,7 @@
       </div>
       <el-dialog
     title="请填写拒绝理由"
-    
+     
     :visible.sync="dialogVisible"
     width="30%"
     >
@@ -125,15 +125,20 @@
         
       </el-input> -->   
       <el-form :inline="true"  class="demo-form-inline">
-          <el-form-item label="审批人">
-        <el-input  ></el-input>
+          <el-form-item label="拒绝理由:">
+        <el-input type="textarea"
+        style="width:425px"
+        :rows="5"
+        :col="3" ></el-input>
           </el-form-item>
       </el-form>
       <!-- {{textarea}} -->
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="dialogtoqx">取 消</el-button>
-      <el-button type="primary" @click="dialogtoqd">确 定</el-button>
-    </span>
+      <div class="footer_jj">
+        <span slot="footer" class="dialog-footer" >
+          <el-button @click="dialogVisible=false" >取 消</el-button>
+          <el-button type="primary" @click="dialogtoqd">确 定</el-button>
+        </span>
+      </div>
   </el-dialog>
 
    <el-dialog class="toSeeBox"
@@ -222,6 +227,7 @@ import{
   deleteByIdEmployment,
   findEmploymentByTitle,
   saveOrUpdateEmployment,
+  findEmploymentById,
   } 
   from "@/api/employment-controller.js";
 import config from "@/utils/config.js";
@@ -239,11 +245,12 @@ export default {
       pageSize:config.pageSize,
       currentPage:1,
       ids:[],
+      status:[],
       searchType:'',
       employmentTitleData:[],
       dialogVisible:false,
       seeVisible:false,
-      list:[],
+      list:{},
 
       
     };
@@ -259,25 +266,43 @@ export default {
   
   },
   methods: {
-    dialogtoqx(){
+    
+   toSee(row){
+        this.recruitData = { ...row };
+        // console.log(this.recruit);
+        this.seeVisible = true;
       },
 
-   async dialogtoqd(){
+       toDelete(row){
+        //  console.log('----',row);
+        this.list={...row};
+        // console.log(this.list.id,this.list.status);
+        this.dialogVisible=true;
+        
+        // this.list=[...this.recruitData];
 
-        this.recruitData.status="审核未通过";          
-       try {
+      },
+       async dialogtoqd(){
+        
+        // console.log(this.list);
+      
+          try {
+                  delete this.list.publishTime;
+                  delete this.list.startTime;
+                  delete this.list.endTime;
               // this.currentBus.status=jj;
+              this.list.status="审核未通过";
                
-               let res=await saveOrUpdateEmployment(this.recruitData);
+               let res=await saveOrUpdateEmployment(this.list);
                    
               if(res.status===200)
               {    
                   
                    this.dialogVisible=false;                
-                   config.successMsg(this,"修改成功");
+                   config.successMsg(this,"拒绝成功");
                    this.findAllEmp();
               }else{
-                config.successMsg(this,"修改失败");
+                config.successMsg(this,"拒绝失败");
 
               }
               
@@ -332,15 +357,57 @@ export default {
     
 
     // 一键通过
-    async toBatchPass(val){
-      let pass="审核通过";
-      try {
-
-        let res=await findAllEmployment();
-        res.data.status=pass;
-             
-      } catch (error) {
-        console.log(error);
+    async toBatchPass(){
+       let ids = this.ids;
+       if (ids.length > 0) {
+        this.$alert("是否通过？", "提示", {
+          confirmButtonText: "确定",
+          callback: action => {
+            if (action === "confirm") {
+              let result = [];           
+              ids.forEach(async id => {
+                try {
+                 
+                  let res = await findEmploymentById({id:id});
+                  console.log(res.data) ;
+                  res.data.status="审核通过";
+                  this.recruitData=res.data;
+                    delete this.recruitData.publishTime;
+                    delete this.recruitData.startTime;
+                    delete this.recruitData.endTime;
+                  try {
+                    let stu=await saveOrUpdateEmployment(this.recruitData);
+                    this.findAllEmp();
+                  } catch (error) {
+                    config.successMsg(this,"保存错误！");
+                  }
+                  console.log(res.data.status);
+                  result.push(res.status);
+                } catch (error) {
+                  result.push(200);
+                }
+              });
+              setTimeout(() => {
+                // console.log(result);
+                //判断是否都是200
+                let resu = result.every(item => {
+                  return item === 200;
+                });
+                if (resu) {
+                  config.successMsg(this, "批量删除成功");
+                } else {
+                  config.errorMsg(this, "批量删除失败");
+                }
+                this.findAllEmp();
+              }, 500);
+            }
+          }
+        });
+      } else {
+        this.$message({
+          message: "请选中要删除的数据",
+          type: "warning"
+        });
       }
 
     },
@@ -383,11 +450,7 @@ export default {
         }
       },
 
-       toSee(row){
-        this.list = { ...row };
-        // console.log(this.list);
-        this.seeVisible = true;
-      },
+      
       async toEdit(row){
         // console.log(row);    
          
@@ -418,11 +481,7 @@ export default {
             }
 
       },
-      toDelete(row){
-        this.recruitData=[...row];
-        this.dialogVisible=true;
-
-      },
+     
 
       selectionChange(val) {
         console.log(val);
@@ -489,4 +548,8 @@ export default {
   float:right;
  
 }
+.footer_jj{
+  text-align: center;
+}
+
 </style>
