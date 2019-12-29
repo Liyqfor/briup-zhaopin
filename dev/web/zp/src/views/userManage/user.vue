@@ -1,7 +1,31 @@
 <!--
  @Author:Ivan
- @Date:2019-12-29 16:06:49
+ @Date:2019-12-29 17:05:28
  @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 17:05:28
+-->
+
+ @Last Modified time:2019-12-29 17:05:14
+-->
+
+ @Last Modified time:2019-12-29 17:04:55
+-->
+
+ @Last Modified time:2019-12-29 17:04:51
+-->
+
+ @Last Modified time:2019-12-29 16:43:48
+-->
+
+ @Last Modified time:2019-12-29 16:43:36
+-->
+
+ @Last Modified time:2019-12-29 16:42:50
+-->
+
+ @Last Modified time:2019-12-29 16:41:58
+-->
+
  @Last Modified time:2019-12-29 16:06:49
 -->
 
@@ -18,19 +42,19 @@
 <template>
 
   <div id="userList">
-    <div style="float: right; margin-right: 280px;"><div class="btnDiv">
-      <el-button type="primary" @click="toAdd()"  icon="el-icon-info" style="background:#ee7942">添加用户</el-button>
-      <el-button type="primary" @click="toImport()"  icon="el-icon-info" style="background:#4876ff">导入用户</el-button>
+    <div style="float: right; margin-right: 230px;"><div class="btnDiv">
+      <el-button type="primary" @click="toAdd()"  icon="el-icon-info" style="background:#ee7942" size="mini">添加用户</el-button>
+      <el-button type="primary" @click="toImport()"  icon="el-icon-info" style="background:#4876ff" size="mini">导入用户</el-button>
     </div></div>
     <div class="searchDiv">
       <div class="selectbox1">
-        <el-select @change="educationChange" v-model="education" placeholder="学历" style="width:200px" clearable>
+        <el-select @change="educationChange" v-model="education" placeholder="学历" style="width:200px" clearable size="mini">
           <el-option v-for="item in educationData" 
             :key="item" 
             :label="item" 
             :value="item"></el-option>
         </el-select>
-        <el-select @change="genderChange" v-model="gender" placeholder="性别" style="width:100px" clearable>
+        <el-select @change="genderChange" v-model="gender" placeholder="性别" style="width:100px" clearable size="mini">
           <el-option v-for="item in genderData" 
             :key="item" 
             :label="item" 
@@ -38,12 +62,12 @@
         </el-select>
       </div>
       <div class="selectbox2">
-        <el-input clearable @change="inputChange" placeholder="请输入内容" v-model="searchKeyword">
-            <el-select style="width:100px" v-model="searchType" slot="prepend" placeholder="请选择" clearable>
+        <el-input clearable @change="inputChange" placeholder="请输入内容" v-model="searchKeyword" size="mini">
+            <el-select style="width:100px" v-model="searchType" slot="prepend" placeholder="请选择" clearable size="mini">
               <el-option label="用户名" value="1"></el-option>
               <el-option label="手机号" value="2"></el-option>
             </el-select>
-            <el-button @click="searchForUser(searchKeyword)" slot="append" icon="el-icon-search"></el-button>
+            <el-button @click="searchForUser(searchKeyword)" slot="append" icon="el-icon-search" size="mini"></el-button>
           </el-input>
 
       </div>
@@ -73,7 +97,7 @@
       </el-table>  
     </div>
     <div class="bu_b">
-      <el-button @click="toBatchDelete" type="danger" plain>批量删除</el-button>
+      <el-button @click="toBatchDelete" type="danger" plain size="mini">批量删除</el-button>
     </div>
     <div class="pagi">
       <el-pagination
@@ -513,7 +537,7 @@ export default {
 }
 .btnDiv{
   width: 350px;
-  margin-top: -60px;
+  margin-top: -50px;
   position: fixed;
 }
 .dialog-footer{

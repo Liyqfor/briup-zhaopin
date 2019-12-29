@@ -1,7 +1,10 @@
 <!--
  @Author:Ivan
- @Date:2019-12-29 16:05:24
+ @Date:2019-12-29 17:06:04
  @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 17:06:04
+-->
+
  @Last Modified time:2019-12-29 16:05:24
 -->
 
@@ -15,7 +18,7 @@
 <template>
   <div id="businessList">
     <div class="searchDiv">
-      <el-select @change="provinceChange"  v-model="province" clearable placeholder="省份">
+      <el-select @change="provinceChange"  v-model="province" clearable placeholder="省份" size="mini">
         <el-option
           v-for="item in provinceData"
           :key="item.id"
@@ -23,13 +26,13 @@
           :value="item.name"
         ></el-option>
       </el-select>
-      <el-select @change="cityChange"  v-model="city" clearable placeholder="城市">
+      <el-select @change="cityChange"  v-model="city" clearable placeholder="城市" size="mini">
         <el-option v-for="item in cityData" :key="item.id" :label="item.name" :value="item.name"></el-option>
       </el-select>
-      <el-select @change="industryChange"  v-model="industry" clearable placeholder="行业">
+      <el-select @change="industryChange"  v-model="industry" clearable placeholder="行业" size="mini">
         <el-option v-for="item in industryData" :key="item" :label="item" :value="item"></el-option>
       </el-select>
-      <el-select @change="scaleChange"  v-model="scale" clearable placeholder="规模">
+      <el-select @change="scaleChange"  v-model="scale" clearable placeholder="规模" size="mini">
         <el-option v-for="item in scaleData" :key="item" :label="item" :value="item"></el-option>
       </el-select>
     </div>

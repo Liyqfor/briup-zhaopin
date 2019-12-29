@@ -1,3 +1,40 @@
+<!--
+ @Author:Ivan
+ @Date:2019-12-29 16:58:32
+ @LastModifiedBy:Ivan
+ @Last Modified time:2019-12-29 16:58:32
+-->
+
+ @Last Modified time:2019-12-29 16:58:21
+-->
+
+ @Last Modified time:2019-12-29 16:57:46
+-->
+
+ @Last Modified time:2019-12-29 16:57:14
+-->
+
+ @Last Modified time:2019-12-29 16:56:43
+-->
+
+ @Last Modified time:2019-12-29 16:53:36
+-->
+
+ @Last Modified time:2019-12-29 16:52:14
+-->
+
+ @Last Modified time:2019-12-29 16:51:10
+-->
+
+ @Last Modified time:2019-12-29 16:50:55
+-->
+
+ @Last Modified time:2019-12-29 16:47:47
+-->
+
+ @Last Modified time:2019-12-29 16:47:24
+-->
+
 /*
  * @Author: liuyr 
  * 客服列表页面
@@ -7,13 +44,13 @@
  */
 <template>
   <div id="waiterList">
-    <div class="controler">
+    <div class="controler" style="position: absolute;top: 5px;right: 10px;">
       <el-button @click="showAddDialg" style="background:rgb(238,121,66); color:#fff;" icon="el-icon-info" size="mini">添加客服</el-button>
       <el-button @click="showImportDialg" type="primary" icon="el-icon-info" size="mini" >导入客服</el-button>
     </div>
     <div class="searchDIV">
       <div class="left-searchDIV">
-            <el-select @change="educationChange" v-model="CustomerService" clearable placeholder="全部"  >
+            <el-select @change="educationChange" v-model="CustomerService" clearable placeholder="全部"  size="mini">
               <el-option
                 v-for="item1 in CustomerServiceByEducationData"
                 :key="item1"
@@ -21,7 +58,7 @@
                 :value="item1">
               </el-option>
             </el-select>
-            <el-select @change="genderChange" v-model="CustomerServiceByEducation" clearable placeholder="性别"  >
+            <el-select @change="genderChange" v-model="CustomerServiceByEducation" clearable placeholder="性别"  size="mini">
               <el-option
                 v-for="item2 in CustomerServiceByGenderData"
                 :key="item2"
@@ -32,12 +69,12 @@
             <!-- <span>（当前标准为 <span style="">15</span> 人）</span> -->
       </div>
       <div class="right-searchDIV">
-          <el-input placeholder="请输入内容" v-model="sercherBoxInput" @keyup.enter="toSercherCustomerService" clearable  class="input-with-select">
-            <el-select v-model="sercherSelectInput"  slot="prepend" placeholder="关键字" style="width:7vw">
+          <el-input placeholder="请输入内容" v-model="sercherBoxInput" @keyup.enter="toSercherCustomerService" clearable  class="input-with-select" size="mini">
+            <el-select v-model="sercherSelectInput"  slot="prepend" placeholder="关键字" style="width:7vw" size="mini">
               <!-- <el-option label="id" value="111"></el-option> -->
               <el-option label="用户名" value="222"></el-option>
             </el-select>
-            <el-button slot="append" @click="toSercherCustomerService" icon="el-icon-search"></el-button>
+            <el-button slot="append" @click="toSercherCustomerService" icon="el-icon-search" size="mini"></el-button>
           </el-input>
 
       </div>
@@ -535,9 +572,7 @@ export default {
 </script>
 <style scoped>
 .controler{
-  position: absolute;
-  top: 1%;
-  right: 2%;
+  
 }
 .searchDIV{
   display: flex;
