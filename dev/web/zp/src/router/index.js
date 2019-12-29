@@ -1,3 +1,10 @@
+/***
+ * @Author:Ivan
+ * @Date:2019-12-29 18:57:41
+ * @LastModifiedBy:Ivan
+ * @Last Modified time:2019-12-29 18:58:47
+ */
+
 import Vue from 'vue'
 import Router from 'vue-router'
 Vue.use(Router)
@@ -29,18 +36,18 @@ export const constantRouterMap = [{
       }
     }]
   },
-   {
-    path: '/cityManage',
-    component: Layout,
-    children: [{
-      path: 'index',
-      component: () => import('@/views/cityManage/index'),
-      meta: {
-        title: '城市管理',
-        icon: 'fa fa-building'
-      }
-    }]
-  }, 
+  //  {
+  //   path: '/cityManage',
+  //   component: Layout,
+  //   children: [{
+  //     path: 'index',
+  //     component: () => import('@/views/cityManage/index'),
+  //     meta: {
+  //       title: '城市管理',
+  //       icon: 'fa fa-building'
+  //     }
+  //   }]
+  // }, 
   {
     path: '/businessManage',
     component: Layout,
@@ -172,28 +179,28 @@ export const constantRouterMap = [{
       }]
     }]
   },
-  {
-    path: '/limitManage',
-    component: Layout,
-    redirect: '/limitManage/index/limit',
-    meta: {
-      title: '权限管理',
-      icon: 'fa fa-gratipay'
-    },
-    children: [{
-      path: 'index',
-      hidden: true,
-      component: () => import('@/views/limitManage/index'),
-      children: [{
-        path: 'limit',
-        hidden: true,
-        component: () => import('@/views/limitManage/limit'),
-        meta: {
-          title: '权限列表'
-        }
-      }]
-    }]
-  },
+  // {
+  //   path: '/limitManage',
+  //   component: Layout,
+  //   redirect: '/limitManage/index/limit',
+  //   meta: {
+  //     title: '权限管理',
+  //     icon: 'fa fa-gratipay'
+  //   },
+  //   children: [{
+  //     path: 'index',
+  //     hidden: true,
+  //     component: () => import('@/views/limitManage/index'),
+  //     children: [{
+  //       path: 'limit',
+  //       hidden: true,
+  //       component: () => import('@/views/limitManage/limit'),
+  //       meta: {
+  //         title: '权限列表'
+  //       }
+  //     }]
+  //   }]
+  // },
   {
     path: '/wantForJobContact',
     component: Layout,
@@ -245,42 +252,42 @@ export const constantRouterMap = [{
       }]
     }]
   },
-  {
-    path: '/appManage',
-    component: Layout,
-    redirect: '/appManage/index/category',
-    meta: {
-      title: 'APP管理',
-      icon: 'fa fa-bandcamp'
-    },
-    children: [{
-      path: 'index',
-      hidden: true,
-      component: () => import('@/views/appManage/index'),
-      children: [{
-        path: 'category',
-        hidden: true,
-        component: () => import('@/views/appManage/category'),
-        meta: {
-          title: '栏目管理'
-        }
-      }, {
-        path: 'hot',
-        hidden: true,
-        component: () => import('@/views/appManage/hot'),
-        meta: {
-          title: '热门推荐'
-        }
-      }, {
-        path: 'adv',
-        hidden: true,
-        component: () => import('@/views/appManage/adv'),
-        meta: {
-          title: '广告管理'
-        }
-      }]
-    }]
-  },
+  // {
+  //   path: '/appManage',
+  //   component: Layout,
+  //   redirect: '/appManage/index/category',
+  //   meta: {
+  //     title: 'APP管理',
+  //     icon: 'fa fa-bandcamp'
+  //   },
+  //   children: [{
+  //     path: 'index',
+  //     hidden: true,
+  //     component: () => import('@/views/appManage/index'),
+  //     children: [{
+  //       path: 'category',
+  //       hidden: true,
+  //       component: () => import('@/views/appManage/category'),
+  //       meta: {
+  //         title: '栏目管理'
+  //       }
+  //     }, {
+  //       path: 'hot',
+  //       hidden: true,
+  //       component: () => import('@/views/appManage/hot'),
+  //       meta: {
+  //         title: '热门推荐'
+  //       }
+  //     }, {
+  //       path: 'adv',
+  //       hidden: true,
+  //       component: () => import('@/views/appManage/adv'),
+  //       meta: {
+  //         title: '广告管理'
+  //       }
+  //     }]
+  //   }]
+  // },
   {
     path: '*',
     redirect: '/404',
