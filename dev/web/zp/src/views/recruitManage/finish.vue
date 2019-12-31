@@ -1,25 +1,9 @@
-<!--
- @Author:Ivan
- @Date:2019-12-29 19:24:34
- @LastModifiedBy:Ivan
- @Last Modified time:2019-12-29 19:24:34
--->
-
- @Last Modified time:2019-12-29 19:21:58
--->
-
- @Last Modified time:2019-12-29 19:21:34
--->
-
- @Last Modified time:2019-12-29 19:21:27
--->
-
 /*
  * @Author: liuyr 
  * 招聘完结页面
  * @Date: 2019-12-23 17:03:30 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2019-12-29 17:27:21
+ * @Last Modified time: 2019-12-30 01:16:14
  */
 <template>
   <div id="recruitDoing">    
@@ -45,8 +29,8 @@
               <el-button @click="keySearch" slot="append" icon="el-icon-search"></el-button>
             </el-input>
           </div> -->
-          <el-input placeholder="请输入内容"  v-model="string" class="input-with-select"  size="mini">
-            <el-select v-model="key" slot="prepend" style="width:120px" placeholder="请选择" size="mini">
+          <el-input placeholder="请输入内容"  v-model="string" class="input-with-select">
+            <el-select v-model="key" slot="prepend" class="searchSelect"  placeholder="请选择">
               <el-option v-for="item in options"
                 :key="item.value"
                 :label="item.label"
@@ -58,7 +42,7 @@
         </div>
         <!-- 职位选择筛选器 -->
         <div class="jobDropDownBox">
-          <el-select @change="JobSelect" clearable v-model="job" placeholder="职位类型" size="mini">
+          <el-select @change="JobSelect" clearable v-model="job" placeholder="职位类型" >
             <el-option class="oooo"
               
               v-for="item in jobData"
@@ -90,7 +74,7 @@
           <el-table-column prop="contactPhone" label="联系方式" show-overflow-tooltip></el-table-column>
           <el-table-column prop="job" label="职位" show-overflow-tooltip></el-table-column>
           <el-table-column prop="publishTime" width=400 label="发布时间" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="zip" label="详情" width="120">
+          <el-table-column prop="zip" label="详情" fixed="right" width="120">
               <template slot-scope="scope">
                   <el-button @click="toSee(scope.row)" type="text" size="small" >查看</el-button>
                 </template>
@@ -126,7 +110,7 @@
       <el-dialog class="toSeeBox"
         :title="toSeeTitle.title"
         :visible.sync="dialogVisible"
-        width="35%"
+        width=35%
         :before-close="handleClose">
 
         <!-- 最外层容器 -->
@@ -152,7 +136,14 @@
           <div class="twoFlour Flour">
 
             <div class="tagBox">
-              <el-tag type="success">{{toSeeTitle.welfare}}</el-tag>
+               <div class="tagBox">
+              <el-tag style="margin-right:3px;"
+                :key="tag"
+                v-for="tag in welfareData"
+                :disable-transitions="false">
+                {{tag}}
+              </el-tag>
+            </div>
             </div>
 
           </div>
@@ -395,6 +386,7 @@ import config from '@/utils/config.js';
 export default {
   data() {
     return { 
+      welfareData:[],   
       provinceData:[],provinceCityData:[], //这里是模态框编辑数据使用的省份和城市选择数组，因为后台没有给相应接口
       formLabelWidth:"80px",
       businessName:"",
@@ -572,7 +564,7 @@ export default {
     async toSave(formName){
 
 
-  //表单验证
+   //表单验证
      this.$refs[formName].validate(async(valid) => {
           if (valid) {
                             // 将省份id转换为省份名字保存到数据库
@@ -752,6 +744,10 @@ export default {
       let res = await findBusinessById({id:id});
       this.businessName=res.data.name;
 
+      //传入福利tag
+      let str = this.toSeeTitle.welfare;
+      this.welfareData=str.split(",")
+
     },
 
     //查找全部商家信息
@@ -843,12 +839,16 @@ export default {
   float: right;
 }
 
+.searchSelect{
+  width:120px
+}
+
 .input-with-select{
   width: 340px;
 }
 
 .formContainer{
-  margin-top: -10px;
+  margin-top: 20px;
   height: 455px;
 }
 
@@ -856,8 +856,13 @@ export default {
   float: right;
 }
 
+.el-dialog>*{
+  min-width: 370px;
+}
 
 /* （模态框查看） */
+
+
 .Flour{
   margin-bottom: 10px;
 }
@@ -889,8 +894,12 @@ export default {
 /* (模态框编辑) */
 
 
+.btnBox{
+  text-align: center;
+}
+
 .editbutton{
-  float: right;
+  
   margin: 10px;
 }
 
@@ -901,5 +910,36 @@ export default {
 
 
 /*-----------------------------------------------------------手机样式--------------------------------------------------------------- */
+@media screen and (max-width: 500px){
+
+  .SearchBox{
+    width: 55%;
+  }
+
+  .jobDropDownBox{
+    width: 35%;
+  }
+
+  .searchSelect{
+  width:40px
+  }
+  
+  .input-with-select{
+  width: 200px;
+  }
+
+  /* 模态框查看 */
+  .el-dialog__wrapper {
+    position: fixed;
+    top: 0;
+    left: -270px;
+    bottom: 0;
+    overflow: auto;
+    margin: 0;
+    width: 900px;
+}
+
+
+}
 
 </style>

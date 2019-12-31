@@ -1,24 +1,63 @@
 <!--
  @Author:Ivan
- @Date:2019-12-29 17:06:04
+ @Date:2019-12-29 22:58:30
  @LastModifiedBy:Ivan
- @Last Modified time:2019-12-29 17:06:04
+ @Last Modified time:2019-12-29 22:58:30
 -->
 
- @Last Modified time:2019-12-29 16:05:24
+ @Last Modified time:2019-12-29 22:54:25
+-->
+
+ @Last Modified time:2019-12-29 22:53:00
+-->
+
+ @Last Modified time:2019-12-29 22:51:40
+-->
+
+ @Last Modified time:2019-12-29 22:51:25
+-->
+
+ @Last Modified time:2019-12-29 22:50:45
+-->
+
+ @Last Modified time:2019-12-29 22:49:59
+-->
+
+ @Last Modified time:2019-12-29 22:48:46
+-->
+
+ @Last Modified time:2019-12-29 22:48:30
+-->
+
+ @Last Modified time:2019-12-29 22:47:19
+-->
+
+ @Last Modified time:2019-12-29 22:46:39
+-->
+
+ @Last Modified time:2019-12-29 22:46:33
+-->
+
+ @Last Modified time:2019-12-29 22:46:10
+-->
+
+ @Last Modified time:2019-12-29 22:46:06
+-->
+
+ @Last Modified time:2019-12-29 21:25:17
 -->
 
 /*
- * @Author: liuyr 
+ * @Author: liuhongwei
  * 商家列表页面
  * @Date: 2019-12-23 17:11:53 
- * @Last Modified by: liyq
- * @Last Modified time: 2019-12-27 20:28:55
+ * @Last Modified by: liuhongwei
+ * @Last Modified time: 2019-12-29 20:50:46
  */
 <template>
   <div id="businessList">
     <div class="searchDiv">
-      <el-select @change="provinceChange"  v-model="province" clearable placeholder="省份" size="mini">
+      <el-select @change="provinceChange" size="mini" v-model="province" clearable placeholder="省份">
         <el-option
           v-for="item in provinceData"
           :key="item.id"
@@ -26,24 +65,19 @@
           :value="item.name"
         ></el-option>
       </el-select>
-      <el-select @change="cityChange"  v-model="city" clearable placeholder="城市" size="mini">
+      <el-select @change="cityChange" size="mini" v-model="city" clearable placeholder="城市">
         <el-option v-for="item in cityData" :key="item.id" :label="item.name" :value="item.name"></el-option>
       </el-select>
-      <el-select @change="industryChange"  v-model="industry" clearable placeholder="行业" size="mini">
+      <el-select @change="industryChange" size="mini" v-model="industry" clearable placeholder="行业">
         <el-option v-for="item in industryData" :key="item" :label="item" :value="item"></el-option>
       </el-select>
-      <el-select @change="scaleChange"  v-model="scale" clearable placeholder="规模" size="mini">
+      <el-select @change="scaleChange" size="mini" v-model="scale" clearable placeholder="规模">
         <el-option v-for="item in scaleData" :key="item" :label="item" :value="item"></el-option>
       </el-select>
     </div>
+    <!--表格主体内容框-->
     <div class="tableDiv">
-      <el-table
-        ref="multipleTable"
-        :data="businessList"
-        tooltip-effect="dark"
-        style="width: 100%"
-        @selection-change="selectionChange"
-      >
+      <el-table ref="multipleTable" :data="businessList" tooltip-effect="dark" style="width: 100%" @selection-change="selectionChange" >
         <el-table-column align="center" type="selection" width="55"></el-table-column>
         <el-table-column align="center" prop="name" label="企业名称"></el-table-column>
         <el-table-column align="center" prop="contactName" label="联系人"></el-table-column>
@@ -69,6 +103,11 @@
       <div class="btnDiv">
         <el-button @click="toBatchDelete" size="mini" type="danger" plain>批量删除</el-button>
       </div>
+      <!--新添商家-->
+      <div class="increase">
+        <el-button @click="toAdd" size="mini" type="primary" plain>新添商家</el-button>
+      </div>
+      <!--页面Div-->
       <div class="pageDiv">
         <el-pagination
           :page-size="pageSize"
@@ -80,7 +119,7 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 查看的对话框 -->
+    <!-- 查看模态框 -->
     <el-dialog :title="currentBus.name" :visible.sync="seeVisible">
       <div class="seeDiv">
         <span>行业类型：</span>
@@ -105,133 +144,208 @@
         </a>
       </div>
     </el-dialog>
-
+    <!-- 修改模态框 -->
     <el-dialog title="修改商家信息" :visible.sync="editVisible" width="60%" :before-close="beforeClose">
-      <!-- {{currentBus}} -->
-      <el-form :model="currentBus" :rules="rules" ref="ruleFrom">
+      <el-form :model="currentBus" :rules="rules" ref="ruleForm">
         <el-row :gutter="20">
           <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item prop="name" label="公司名称" :label-width="formLabelWidth">
-                <el-input v-model="currentBus.name" ></el-input>
-              </el-form-item>
-            </div>
+            <el-form-item prop="name" label="公司名称" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.name"></el-input>
+            </el-form-item>
           </el-col>
-
           <el-col :span="12">
-            <div class="grid-content bg-purple-light">
-              <el-form-item prop="industry" label="所属行业" :label-width="formLabelWidth">
-                <el-input v-model="currentBus.industry" ></el-input>
-              </el-form-item>
-            </div>
+            <el-form-item prop="industry" label="所属行业" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.industry"></el-input>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item prop="scale" label="公司规模" :label-width="formLabelWidth">
-                <el-input v-model="currentBus.scale" ></el-input>
-              </el-form-item>
-            </div>
+            <el-form-item prop="scale" label="公司规模" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.scale"></el-input>
+            </el-form-item>
           </el-col>
-
           <el-col :span="12">
-            <div class="grid-content bg-purple-light">
-              <el-form-item label="所在城市" :label-width="formLabelWidth" required>
-                    <el-row>
-                      <el-col :span="12">
-                        <div class="grid-content bg-purple">
-                            <el-form-item prop="province">
-                              <el-select @change="dialogProChange" v-model="currentBus.province" placeholder="请选择省份" clearable>
-                                <!-- <el-option label="请选择" ></el-option> -->
-                                <el-option
-                                  v-for="item in provinceData"
-                                  :key="item.id"
-                                  :label="item.name"
-                                  :value="item.id"
-                                ></el-option>
-                                </el-select>  
-                               </el-form-item>
-                          
-
-                        </div>
-                        </el-col>
-                      <el-col :span="12">
-                          <div class="grid-content bg-purple-light">
-                           <el-form-item prop="city">
-      
-                              <el-select v-model="currentBus.city" placeholder="请选择城市" clearable>
-                                <!-- <el-option label="请选择" ></el-option> -->
-                                <el-option
-                                    v-for="item in provinceCityData"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.name"
-                                ></el-option>
-                              </el-select>
-                             </el-form-item>
-                          
-                          </div>
-                        </el-col>
-                    </el-row>
-            
-                                  
-                 
-              </el-form-item>
-            </div>
+            <el-form-item required label="所在城市" :label-width="formLabelWidth">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item prop="province">
+                    <el-select
+                      clearable
+                      @change="dialogProChange"
+                      v-model="currentBus.province"
+                      placeholder="请选择省份">
+                      <el-option
+                        v-for="item in provinceData"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      ></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item prop="city">
+                    <el-select clearable v-model="currentBus.city" placeholder="请选择城市">
+                      <el-option
+                        v-for="item in provinceCityData"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.name"
+                      ></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form-item>
           </el-col>
         </el-row>
-          
-         <el-row :gutter="20">
-          <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item prop="contactName" label="联系人" :label-width="formLabelWidth">
-                <el-input v-model="currentBus.contactName" ></el-input>
-              </el-form-item>
-            </div>
-          </el-col>
-
-          <el-col :span="12">
-            <div class="grid-content bg-purple-light">
-              <el-form-item prop="contactPhone" label="联系电话 " :label-width="formLabelWidth">
-                <el-input v-model="currentBus.contactPhone" ></el-input>
-              </el-form-item>
-            </div>
-          </el-col>
-        </el-row>
-
         <el-row :gutter="20">
           <el-col :span="12">
-            <div class="grid-content bg-purple">
-              <el-form-item prop="location" label="详细地址" :label-width="formLabelWidth">
-                <el-input type="textarea" :rows="4" v-model="currentBus.location" ></el-input>
-              </el-form-item>
-            </div>
+            <el-form-item prop="contactName" label="联系人" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.contactName"></el-input>
+            </el-form-item>
           </el-col>
-
           <el-col :span="12">
-            <div class="grid-content bg-purple-light">
-              <el-form-item prop="description" label="公司简介 " :label-width="formLabelWidth">
-                <el-input type="textarea" :rows="4" v-model="currentBus.description" ></el-input>
-              </el-form-item>
-            </div>
+            <el-form-item prop="contactPhone" label="联系电话" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.contactPhone"></el-input>
+            </el-form-item>
           </el-col>
         </el-row>
-        
-        
-       
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item prop="location" label="详细地址" :label-width="formLabelWidth">
+              <el-input type="textarea" :rows="4" v-model="currentBus.location"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="description" label="公司简介" :label-width="formLabelWidth">
+              <el-input type="textarea" :rows="4" v-model="currentBus.description"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button  @click="toCancel('ruleFrom')">取 消</el-button>
-        <el-button  type="primary" @click="toSave('ruleFrom')">确 定</el-button>
+        <el-button size="mini" @click="toCancel('ruleForm')">取 消</el-button>
+        <el-button size="mini" type="primary" @click="toSave('ruleForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!--123456 添加商家-->
+    <el-dialog :title="dialogTitle" :visible.sync="addVisible" width="60%" :before-close="beforeClose">
+      <el-form :model="currentBus" :rules="rules" ref="ruleForm">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item prop="name" label="公司名称" :label-width="formLabelWidth">  
+              <el-input v-model="currentBus.name"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="industry" label="所属行业" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.industry"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item prop="establishedTime" label="成立时间" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.establishedTime"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="registeredCapital" label="注册资本" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.registeredCapital"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item prop="status" label="状态" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.status"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="businessLicense" label="营业执照" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.businessLicense"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item prop="scale" label="公司规模" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.scale"></el-input>
+            </el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item required label="所在城市" :label-width="formLabelWidth">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item prop="province">
+                    <el-select
+                      clearable
+                      @change="dialogProChange"
+                      v-model="currentBus.province"
+                      placeholder="请选择省份">
+                      <el-option
+                        v-for="item in provinceData"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      ></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item prop="city">
+                    <el-select clearable v-model="currentBus.city" placeholder="请选择城市">
+                      <el-option
+                        v-for="item in provinceCityData"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.name"
+                      ></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item prop="contactName" label="联系人" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.contactName"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="contactPhone" label="联系电话" :label-width="formLabelWidth">
+              <el-input v-model="currentBus.contactPhone"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item prop="location" label="详细地址" :label-width="formLabelWidth">
+              <el-input type="textarea" :rows="4" v-model="currentBus.location"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="description" label="详细信息" :label-width="formLabelWidth">
+              <el-input type="textarea" :rows="4" v-model="currentBus.description"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="toCancel('ruleForm')">取 消</el-button>
+        <el-button size="mini" type="primary" @click="toIncrease('ruleForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { findAllProvince,findProvinceById } from "@/api/province.js";
-import { findAllCity,findCityByProvinceId} from "@/api/city.js";
+import { findAllProvince } from "@/api/province.js";                           /**导入api */
+import { findAllCity, findCityByProvinceId } from "@/api/city.js";
 import {
   findAllBusiness,
   findBusinessByProvince,
@@ -271,54 +385,51 @@ export default {
       pageSize: config.pageSize,
       //批量删除ids
       ids: [],
-      //当前查看或修改的对象
+      //当前查看或修改的对象    添加
       currentBus: {},
       //查看模态框显示与否
       seeVisible: false,
-      // 修改模态框的宽度
-      formLabelWidth:'80px',
-      //查看模态框显示与否
-      editVisible:false,
-      // 省份对于的城市信息
-      provinceCityData:[],
-      // 校验规则
-        rules: {
-          name: [
-            { required: true, message: '请输入公司名称', trigger: 'blur' },
-           
-          ],  
-          industry: [
-            { required: true, message: '请输入行业类型', trigger: 'blur' },
-           
-          ],    
-          scale: [
-            { required: true, message: '请输入公司规模', trigger: 'blur' },
-           
-          ],   
-          contactName: [
-            { required: true, message: '请输入联系人', trigger: 'blur' },
-           
-          ],   
-          contactPhone: [
-            { required: true, message: '请输入联系人电话', trigger: 'blur' },
-           
-          ],   
-           location: [
-            { required: true, message: '请输入详细地址', trigger: 'blur' },
-           
-          ],   
-          description: [
-            { required: true, message: '请输入公司简介', trigger: 'blur' },
-           
-          ], 
-          province: [
-            {  required: true, message: '请选择省份', trigger: 'change' }
-          ],  
-          city: [
-            {  required: true, message: '请选择城市', trigger: 'change' }
-          ],          
-        }
+      //修改模态框显示与否
+      editVisible: false,
+      //添加模块框显示与否
+      addVisible: false,
+      //在线状态
+      statusData:[],
+      //营业执照有无
+      businessLicense:[],
+      dialogTitle:"新添商家",
+      //修改模态框标题名称所占宽度
+      formLabelWidth: "80px",
+      //省份对应的城市信息
+      provinceCityData: [],
+      //校验规则
+      rules: {
+        name: [{ required: true, message: "请输入公司名称", trigger: "blur" }],
 
+        industry: [{ required: true, message: "请输入行业类型", trigger: "blur" }],
+
+        scale: [{ required: true, message: "请输入公司规模", trigger: "blur" }],
+
+        contactName: [{ required: true, message: "请输入联系人", trigger: "blur" } ],
+
+        contactPhone: [{ required: true, message: "请输入联系电话", trigger: "blur" }],
+
+        location: [{ required: true, message: "请输入详细地址", trigger: "blur" }],
+
+        description: [{ required: true, message: "请输入公司简介", trigger: "blur" }],
+
+        province: [{ required: false, message: "请选择省份", trigger: "change" }],
+
+        city: [{ required: false, message: "请选择城市", trigger: "change" }],
+
+        establishedTime: [{ required: true, message: "输入成立时间", trigger: "blur" }],
+
+        registeredCapital: [{ required: true, message: "输入注册资本", trigger: "blur" }],
+
+        status: [{ required: true, message: "输入状态", trigger: "blur" }],
+
+        businessLicense: [{ required: true, message: "输入注册资本", trigger: "blur" }],
+      }
     };
   },
   computed: {
@@ -331,79 +442,127 @@ export default {
     }
   },
   methods: {
-    // 右上角的取消
-    beforeClose()
-    {
-      this.$refs["ruleFrom"].resetFields();
-       this.editVisible=false;
-
+    //新添商家
+    toAdd(){
+        this.dialogTitle="新添商家";
+        this.currentBus = {};
+        this.addVisible=true;
+        this.getBusinessdata=[];
     },
-    // 关闭模态框
-    toCancel(formName){
-      // 重置表单的验证
+
+    //右上角，模态框关闭之前
+    beforeClose() {
+      this.$refs["ruleForm"].resetFields();
+      this.editVisible = false;
+      this.addVisible = false;
+    },
+    //关闭模态框
+    toCancel(formName) {
+      //重置表单验证，关闭模态框
       this.$refs[formName].resetFields();
-      this.editVisible=false;
+      this.editVisible = false;
+      this.addVisible = false;
     },
+    //添加按钮
+    toIncrease(formName){
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          //通过验证
+          let province = this.currentBus.province;
+          // console.log(province);
+          // console.log(typeof province);
+          // console.log(+province);    NaN  8
+          //如果省份发生更改
+          if (+province) {
+            //将省份id处理为省份名字，过滤省份数组
+            let result = this.provinceData.filter(item => {
+              return item.id === +province;
+            })[0];
+            // result 是省份对象
+            this.currentBus.province = result.name;
+          };
+          //保存
+          try {
+            let res = await saveOrUpdateBusiness(this.currentBus);
 
-    // 保存
-    toSave(formName){
-    //  验证
-     this.$refs[formName].validate(async (valid) => {
-          if (valid) {
-              // 将省份id处理成省份名字在保存
-            let province=this.currentBus.province;
-            //  console.log(province);
-            //  console.log(+province);
-            //  console.log(typeof province);
-            //如果省份发生更改
-            if(+province){
-              // 将省份id处理为省份名字在保存,过滤省份数组
-              let result=this.provinceData.filter((item)=>{
-                return item.id===+province;
-              })[0];
-              this.currentBus.province=result.name;
-
+            if (res.status === 200) {
+              this.findAllBus();
+              this.addVisible = false;
+              config.successMsg(this, "修改成功");
+            } else {
+              config.errorMsg(this, "修改失败");
             }
-            // 保存
-            try {
-              let res=await saveOrUpdateBusiness(this.currentBus);
-              if(res.status==200)
-              {
-                this.editVisible=false;
-                config.successMsg(this,"修改成功");
-                this.findAllBus();
-              }else{
-                config.successMsg(this,"修改失败");
-
-              }
-              
-            
-            } catch (error) {
-              console.log(error);
-            }
-          } else {
-            console.log('error submit!!');
-            return false;
+          } catch (error) {
+            console.log(error);
+            config.errorMsg(this, "修改失败");
           }
-        });
+        } else {
+          config.errorMsg(this, "修改失败");
+          console.log("error submit!!");
+          return false;
+        }
+      });
       
-
-      },
-
-    // 模态框省份发生改变
-   async dialogProChange(val){
+      /*this.addVisible = false;
+        this.$notify({        //弹出弹窗提示
+         title:"成功",
+         message:"保存成功",
+         type: 'success',
+        });*/      
+    },
+    //保存
+    toSave(formName) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          //通过验证
+          console.log(1);
+          
+          let province = this.currentBus.province;
+          // console.log(province);
+          // console.log(typeof province);
+          // console.log(+province);    NaN  8
+          //如果省份发生更改
+          if (+province) {
+            //将省份id处理为省份名字，过滤省份数组
+            let result = this.provinceData.filter(item => {
+              return item.id === +province;
+            })[0];
+            // result 是省份对象
+            this.currentBus.province = result.name;
+          }
+          //保存
+          try {
+            let res = await saveOrUpdateBusiness(this.currentBus);
+            if (res.status === 200) {
+              this.findAllBus();
+              this.editVisible = false;
+              config.successMsg(this, "修改成功");
+            } else {
+              config.errorMsg(this, "修改失败");
+            }
+          } catch (error) {
+            console.log(error);
+            config.errorMsg(this, "修改失败");
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    //模态框省份发生改变
+    async dialogProChange(val) {
       // console.log(val);
-      // alert(val);
-      // 重置省份id获取城市
-      this.currentBus.city='';
+      //重置城市下拉列表
+      this.currentBus.city = "";
+      //通过省份id获取城市
       try {
-        let res = await findCityByProvinceId({ provinceId : val });
-        this.provinceCityData=res.data;
+        let res = await findCityByProvinceId(val);
+        this.provinceCityData = res.data;
       } catch (error) {
         console.log(error);
-        config.errorMsg(this,"通过省份id查找城市失败");
+        config.errorMsg(this, "通过省份查找城市失败");
       }
-      //通过省份id获取城市
     },
     // 页数发生改变
     pageChange(page) {
@@ -488,8 +647,8 @@ export default {
     },
     //编辑
     toEdit(row) {
-      this.currentBus={...row};
-      this.editVisible=true;
+      this.currentBus = { ...row };
+      this.editVisible = true;
     },
     //删除
     toDelete(id) {
@@ -564,7 +723,7 @@ export default {
     //复选框选中切换
     selectionChange(val) {
       //val 就是选中的对象组成的数组
-      console.log(val);
+      // console.log(val);
       let ids = val.map(item => {
         return item.id;
       });
@@ -625,14 +784,21 @@ export default {
 }
 .footerDiv {
   overflow: hidden;
-  margin-top: 20px;
+  margin-top: 10px; 
   .btnDiv {
     float: left;
   }
+   .increase{
+  margin-left: 100PX;
+  }
   .pageDiv {
-    float: right;
+  float: right;
   }
 }
+ 
+
+
+
 .seeDiv {
   border-bottom: 1px solid #ccc;
   line-height: 30px;
@@ -652,10 +818,8 @@ export default {
 .imgDiv {
   text-align: center;
 }
-.dialog-footer{
-    text-align: center;
-    margin-top:-20px;
-     
-
+.dialog-footer {
+  text-align: center;
+  margin-top: -30px;
 }
 </style>

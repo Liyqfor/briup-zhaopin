@@ -1,38 +1,20 @@
 <!--
  @Author:Ivan
- @Date:2019-12-29 16:58:32
+ @Date:2019-12-30 09:29:28
  @LastModifiedBy:Ivan
- @Last Modified time:2019-12-29 16:58:32
+ @Last Modified time:2019-12-30 09:29:28
 -->
 
- @Last Modified time:2019-12-29 16:58:21
+ @Last Modified time:2019-12-30 09:29:21
 -->
 
- @Last Modified time:2019-12-29 16:57:46
+ @Last Modified time:2019-12-30 09:29:08
 -->
 
- @Last Modified time:2019-12-29 16:57:14
+ @Last Modified time:2019-12-30 09:28:49
 -->
 
- @Last Modified time:2019-12-29 16:56:43
--->
-
- @Last Modified time:2019-12-29 16:53:36
--->
-
- @Last Modified time:2019-12-29 16:52:14
--->
-
- @Last Modified time:2019-12-29 16:51:10
--->
-
- @Last Modified time:2019-12-29 16:50:55
--->
-
- @Last Modified time:2019-12-29 16:47:47
--->
-
- @Last Modified time:2019-12-29 16:47:24
+ @Last Modified time:2019-12-30 09:28:33
 -->
 
 /*
@@ -40,17 +22,17 @@
  * 客服列表页面
  * @Date: 2019-12-23 17:11:53 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2019-12-28 17:34:03
+ * @Last Modified time: 2019-12-29 20:55:38
  */
 <template>
-  <div id="waiterList">
-    <div class="controler" style="position: absolute;top: 5px;right: 10px;">
+  <div id="waiterList" style="position:relative">
+    <div class="controler">
       <el-button @click="showAddDialg" style="background:rgb(238,121,66); color:#fff;" icon="el-icon-info" size="mini">添加客服</el-button>
       <el-button @click="showImportDialg" type="primary" icon="el-icon-info" size="mini" >导入客服</el-button>
     </div>
     <div class="searchDIV">
       <div class="left-searchDIV">
-            <el-select @change="educationChange" v-model="CustomerService" clearable placeholder="全部"  size="mini">
+            <el-select @change="educationChange" v-model="CustomerService" clearable size="mini" placeholder="全部"  >
               <el-option
                 v-for="item1 in CustomerServiceByEducationData"
                 :key="item1"
@@ -58,7 +40,7 @@
                 :value="item1">
               </el-option>
             </el-select>
-            <el-select @change="genderChange" v-model="CustomerServiceByEducation" clearable placeholder="性别"  size="mini">
+            <el-select @change="genderChange" v-model="CustomerServiceByEducation" size="mini" placeholder="性别"  >
               <el-option
                 v-for="item2 in CustomerServiceByGenderData"
                 :key="item2"
@@ -69,12 +51,12 @@
             <!-- <span>（当前标准为 <span style="">15</span> 人）</span> -->
       </div>
       <div class="right-searchDIV">
-          <el-input placeholder="请输入内容" v-model="sercherBoxInput" @keyup.enter="toSercherCustomerService" clearable  class="input-with-select" size="mini">
-            <el-select v-model="sercherSelectInput"  slot="prepend" placeholder="关键字" style="width:7vw" size="mini">
+          <el-input placeholder="请输入内容" v-model="sercherBoxInput" @keyup.enter="toSercherCustomerService" clearable size="mini" class="input-with-select">
+            <el-select v-model="sercherSelectInput"  slot="prepend" placeholder="关键字" style="width:7vw">
               <!-- <el-option label="id" value="111"></el-option> -->
               <el-option label="用户名" value="222"></el-option>
             </el-select>
-            <el-button slot="append" @click="toSercherCustomerService" icon="el-icon-search" size="mini"></el-button>
+            <el-button slot="append" @click="toSercherCustomerService" icon="el-icon-search"></el-button>
           </el-input>
 
       </div>
@@ -150,8 +132,11 @@
       >
       <el-form >
         <el-form-item label="" prop="" class="import-content">
-          <p style="margin-top:0;">使用导入功能时，请按照模板表格规定的字段去填写对应信息，您可以点击按钮下载模板表格，填写完后在下提交 </p>
-          <el-button size="mini" style="background: #555; color: #fff;" >下载模板</el-button>
+          <div class="import-content">
+              <p style="margin-top:0; width: 70%">使用导入功能时，请按照模板表格规定的字段去填写对应信息，您可以点击按钮下载模板表格，填写完后在下提交 </p>
+              <el-button size="mini" style="background: #B2DFEE; color: #fff; border:0;" >下载模板</el-button>
+          </div>
+         
         </el-form-item>
         <el-form-item label="" prop="" >
           <div style="display:flex; justify-content: center;">
@@ -181,14 +166,8 @@
           <el-checkbox label="降序"></el-checkbox>
           <el-checkbox label="到期标记"></el-checkbox>
         </el-checkbox-group> -->
-      <div class="left">
-
-        </div>
-        <div class="right">
-          <el-button type="info" size="mini" @click="showExpect" style="background: #555; color:#FFF;">自动分配</el-button>
-          
-          <el-button type="info" size="mini" @click="showExpect" style="background: #555; color:#FFF;">自动填满</el-button>
-        </div>
+      
+        
         
       </div>
       <el-table
@@ -209,11 +188,11 @@
           <el-button type="info" size="mini" @click="showExpect" style="background: #409EFF; color:#FFF; border:0;">自动填满</el-button>
         </div>
         <el-pagination
-          :page-size="pageSize"
+          :page-size="5"
 
-          :current-page.sync="currentPage"
+          :current-page.sync="currentPage1"
           background
-          @current-change="pageChange"
+          @current-change="pageChange1"
           layout="prev, pager, next"
           :total="applicant.length" 
         ></el-pagination>
@@ -227,10 +206,10 @@
           <el-button type="info" size="mini" @click="showExpect" style="background: #409EFF; color:#FFF; border:0;" >自动分配</el-button>
           <el-button type="info" size="mini" @click="showExpect" style="background: #409EFF; color:#FFF;  border:0;">自动填满</el-button>
       </div>
-      
+      <!-- {{pageSize}} -->
       <div class="pageDiv">
         <el-pagination
-          :page-size="5"
+          :page-size="10"
 
           :current-page.sync="currentPage"
           background
@@ -278,7 +257,7 @@ export default {
           toAddCustomerService:{
             gender:"",
             realname:"",
-            realname:"",
+            username:"",
             status: "离线"
           },
           //label的0，1
@@ -286,15 +265,23 @@ export default {
           ////校验规则
           rules: {
                 gender: [{ required: true, message: "请选择性别", trigger: "blur" }],
-                realname: [{ required: true, message: "请输入你的真实名字", trigger: "blur" }],
-                username: [{ required: true, message: "请输入手机号", trigger: "blur" }],
+                realname: [{ required: true, message: "请输入你的真实名字", trigger: "blur" },
+                           { min: 2, message: '最少为2个字符', trigger: 'blur' },
+
+                          ],
+                username: [{ required: true, message: "请输入手机号", trigger: "blur" },
+                           { min: 7, max: 11, message: '固话长度最少为7位，手机号码长度为11位', trigger: 'blur' },
+                           
+                          ],
            },
           //按类别选择分类查找客服的搜索框的键入值
           sercherBoxInput:"",
           //搜索栏的下拉框所选择的值
           sercherSelectInput:"",
-           //当前页
+           //大页面的当前页
           currentPage: 1,
+          //分配模态框的当前页
+          currentPage1: 1,
           //每页条数
           pageSize: config.pageSize,
           //求职人
@@ -360,15 +347,16 @@ export default {
     waiterList() {
       let temp = [...this.CustomerServiceData];
       let page = this.currentPage;
-      let pageSize = config.pageSize;
+      let pageSize = 10;
       return temp.slice((page - 1) * pageSize, page * pageSize);
 
     },
     applicantList(){
+
       let temp = [...this.applicant];
       // alert(temp.lenght)
-      let page = this.currentPage;
-      let pageSize = config.pageSize;
+      let page = this.currentPage1;
+      let pageSize = 5;
       return temp.slice((page - 1) * pageSize, page * pageSize);
     }
   },
@@ -388,9 +376,13 @@ export default {
       this.$refs[formName].resetFields();
       this.toAddVisible = false;
     },
-    // 页数发生改变
+    // 大页数发生改变
     pageChange(page) {
       this.currentPage = page;
+    },
+    // 分配模态框页数发生改变
+    pageChange1(page) {
+      this.currentPage1 = page;
     },
     find_AllCustomerService(){
       findAllCustomerService().then((res)=>{
@@ -508,15 +500,17 @@ export default {
             try {
               let res = await saveOrUpdateCustomerService(this.toAddCustomerService);
               if (res.status === 200) {
+                // console.log(this.$refs[formName]);
                 this.find_AllCustomerService();
                 this.$refs[formName].resetFields();
+                
                 this.toAddVisible = false;
                 config.successMsg(this, "添加成功");
               } else {
                 config.errorMsg(this, "添加失败");
               }
             } catch (error) {
-              console.log(error);
+              
               config.errorMsg(this, "添加失败");
             }
           } else {
@@ -527,7 +521,9 @@ export default {
     },
     //在线情况发生改变
     async educationChange(val){
+      // this.CustomerService="";
       this.CustomerServiceByEducation = "";
+      // this.CustomerServiceByGender = "";
       if (val) {
         try {
           let res = await findCustomerServiceByEducation({ status: val });
@@ -542,6 +538,8 @@ export default {
     },
     //输入性别发生改变
     async genderChange(val){
+      // this.CustomerServiceByEducation = "";
+      this.CustomerService="";
       this.CustomerServiceByGender = "";
       if (val) {
         try {
@@ -572,7 +570,10 @@ export default {
 </script>
 <style scoped>
 .controler{
-  
+  position: absolute;
+  bottom: 104.4%;
+  right: 0%;
+  z-index: 3;
 }
 .searchDIV{
   display: flex;
@@ -580,24 +581,32 @@ export default {
 }
 .tableDiv{
   margin-top: 1%;
+  height: 28vw;
   /* width: 90%; */
 }
 .footerDiv{
+ position: absolute;
+ top: 32vw;
+ /* float: right */
   margin-top: 20px;
   display: flex;
-  /* flex-direction: row; */
-  justify-content: space-between
+  flex-direction: row;
+  justify-content: space-between;
+  z-index: 100000;
+}
+.pageDiv{
+  margin-left: 61vw;
 }
 .right-searchDIV{
   width: 23%;
 }
-.import-content p{
-  width: 80%;
-  float: left;
+.import-content {
+  display: flex;
+  justify-content: space-between;
 }
 .toImportHead{
   display: flex;
-  /* flex-direction: row; */
+  
   justify-content: space-between
 }
 .dialog-footer{
