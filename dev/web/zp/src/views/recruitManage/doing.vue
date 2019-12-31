@@ -3,7 +3,11 @@
  * 招聘中页面
  * @Date: 2019-12-23 17:03:30 
  * @Last Modified by: mikey.zhaopeng
+<<<<<<< HEAD
  * @Last Modified time: 2019-12-30 01:36:10
+=======
+ * @Last Modified time: 2019-12-29 20:47:48
+>>>>>>> d011a96c8cdfcb99e24a41882eef7f714eccedf8
  */
 <template>
   <div id="recruitDoing">    
@@ -30,8 +34,13 @@
             </el-input>
           </div>  -->
 
+<<<<<<< HEAD
            <el-input placeholder="请输入内容" @change="searchChange" id="searchInput" v-model="string" class="input-with-select">
             <el-select v-model="key" slot="prepend" class="searchSelect"  placeholder="请选择">
+=======
+           <el-input placeholder="请输入内容" @change="searchChange"  v-model="string" class="input-with-select">
+            <el-select v-model="key" slot="prepend" style="width:120px" placeholder="请选择">
+>>>>>>> d011a96c8cdfcb99e24a41882eef7f714eccedf8
               <el-option v-for="item in options"
                 :key="item.value"
                 :label="item.label"
@@ -144,7 +153,11 @@
           <!-- 第二行 -->
           <div class="twoFlour Flour">
 
+<<<<<<< HEAD
             <div class="tagBox" >
+=======
+            <div class="tagBox">
+>>>>>>> d011a96c8cdfcb99e24a41882eef7f714eccedf8
               <el-tag style="margin-right:3px;"
                 :key="tag"
                 v-for="tag in welfareData"
@@ -381,6 +394,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+<<<<<<< HEAD
 
         <el-row>
           <el-col :span="24">
@@ -390,6 +404,17 @@
                <el-button class="editbutton" @click="toCancel('ruleForm')">取 消</el-button>
             
 
+=======
+
+        <el-row>
+          <el-col :span="24">
+            
+            <div class="btnBox">
+              <el-button class="editbutton" type="primary" @click="toSave('ruleForm')">保 存</el-button>
+               <el-button class="editbutton" @click="toCancel('ruleForm')">取 消</el-button>
+            
+
+>>>>>>> d011a96c8cdfcb99e24a41882eef7f714eccedf8
             </div>
            
             
@@ -796,7 +821,11 @@ export default {
       //传入福利tag
       //转换福利类型，由string转为数组并添加到tag里
       let str = this.toSeeTitle.welfare;
+<<<<<<< HEAD
       this.welfareData=str.split(",");
+=======
+      this.welfareData=str.split(",")
+>>>>>>> d011a96c8cdfcb99e24a41882eef7f714eccedf8
     },
 
 
@@ -965,6 +994,14 @@ export default {
 
 /* (模态框编辑) */
 
+{
+  
+  background-color: aquamarine;
+}
+
+.btnBox{
+  text-align: center;
+}
 
 .btnBox{
   text-align: center;

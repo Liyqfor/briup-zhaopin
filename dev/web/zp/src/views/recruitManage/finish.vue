@@ -3,7 +3,11 @@
  * 招聘完结页面
  * @Date: 2019-12-23 17:03:30 
  * @Last Modified by: mikey.zhaopeng
+<<<<<<< HEAD
  * @Last Modified time: 2019-12-30 01:16:14
+=======
+ * @Last Modified time: 2019-12-29 20:33:07
+>>>>>>> d011a96c8cdfcb99e24a41882eef7f714eccedf8
  */
 <template>
   <div id="recruitDoing">    
@@ -30,7 +34,11 @@
             </el-input>
           </div> -->
           <el-input placeholder="请输入内容"  v-model="string" class="input-with-select">
+<<<<<<< HEAD
             <el-select v-model="key" slot="prepend" class="searchSelect"  placeholder="请选择">
+=======
+            <el-select v-model="key" slot="prepend" style="width:120px" placeholder="请选择">
+>>>>>>> d011a96c8cdfcb99e24a41882eef7f714eccedf8
               <el-option v-for="item in options"
                 :key="item.value"
                 :label="item.label"

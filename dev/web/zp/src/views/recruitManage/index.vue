@@ -3,7 +3,11 @@
  * 招聘管理页面
  * @Date: 2019-12-22 16:49:20 
  * @Last Modified by: mikey.zhaopeng
+<<<<<<< HEAD
  * @Last Modified time: 2019-12-30 01:37:11
+=======
+ * @Last Modified time: 2019-12-29 20:49:18
+>>>>>>> d011a96c8cdfcb99e24a41882eef7f714eccedf8
  */
 <template>
   <div id="recruitManage">
@@ -30,7 +34,11 @@
 
       <!-- 发布模态框 -->
       <div class="releaseBox">
+<<<<<<< HEAD
       <el-dialog title="发布" class="editBox"  :visible.sync="editVisible" :before-close="beforeClose">
+=======
+      <el-dialog title="编辑" class="editBox"  :visible.sync="editVisible" :before-close="beforeClose">
+>>>>>>> d011a96c8cdfcb99e24a41882eef7f714eccedf8
         <el-form :model="toSeeTitle" ref="ruleForm" :rules="rules">
 
         <el-row>
@@ -543,6 +551,10 @@ export default {
 .btnBox{
   float:right;
   width: 30%;
+<<<<<<< HEAD
+=======
+  min-width: 220px;
+>>>>>>> d011a96c8cdfcb99e24a41882eef7f714eccedf8
 }
 .btnBox>*{
   float: right;
@@ -558,6 +570,7 @@ export default {
   text-align: center;
 }
 
+<<<<<<< HEAD
 /*------------------------------------------------------------平板样式 ---------------------------------------------------------------*/
 
 @media screen and (min-width: 500px) and (max-width: 1025px){
@@ -599,5 +612,9 @@ position: fixed;
 
 
 }
+=======
+
+
+>>>>>>> d011a96c8cdfcb99e24a41882eef7f714eccedf8
 
 </style>
